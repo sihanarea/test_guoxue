@@ -1,12 +1,10 @@
-import Taro from "@tarojs/taro";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { View } from "@tarojs/components";
-
 import { add, minus, asyncAdd } from "../../actions/counter";
 import GridList from "./components/GridList";
+import RowList from "./components/RowList";
 import "./index.less";
-// import Nav from "./components/Nav";
 import CalendarBanner from "./components/CalendarBanner";
 
 @connect(
@@ -40,14 +38,20 @@ class Index extends Component {
   componentDidHide() {}
 
   render() {
-    Taro.setStorageSync("currentIndex","1")
+
     return (
       <View className="index">
+        <View className="header">
+         <View className="header-title">智能排盘工具</View>
+          <CalendarBanner />
+          <RowList />
+        </View>
         {/* <View>{this.props.counter.num}</View>
          <View onCLick={this.props.add}>增加</View> */}
-        <CalendarBanner />
-        <GridList />
-          {/* <Nav current="1" />  */}
+        <View className="index-list">
+           <GridList />
+        </View>
+       
       </View>
     );
   }

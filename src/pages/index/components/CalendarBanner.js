@@ -1,7 +1,8 @@
 import { View, Text } from "@tarojs/components";
-import { Tag } from "@taroify/core";
+import { Tag, Image } from "@taroify/core";
 import { useState, useEffect } from "react";
 import { Solar } from "lunar-javascript";
+import Taro from "@tarojs/taro";
 
 const CalendarBanner = () => {
   const [calendarData, setCalendarData] = useState({});
@@ -43,43 +44,60 @@ const CalendarBanner = () => {
     setCalendarData(state);
   }, []);
 
+  const toHuangli = () => {
+    Taro.navigateTo({
+      url: "/pages/huangli/index",
+    });
+  };
+
   return (
-    <View className="calendar-banner">
-      <View>
-        {calendarData.lunarMonthInChinese}月{calendarData.lunarDayInChinese}日
-      </View>
-      <View>
+    <View className="calendar-banner" onclick={toHuangli}>
+      <View className="calendar-gongli">
         <Text>
-          公历 {calendarData.year}年 {calendarData.month}月 {calendarData.day}日
-          星期{calendarData.weekInChinese} {calendarData.xingZuo}座
+          {calendarData.year}-{calendarData.month}-{calendarData.day} / 周
+          {calendarData.weekInChinese} {calendarData.xingZuo}座
+        </Text>
+      </View>
+      <View className="calendar-mouth">
+        {calendarData.lunarMonthInChinese}月{calendarData.lunarDayInChinese}
+      </View>
+      <View className="calendar-ganzhi">
+        <Text>
+          {calendarData.yearGanZhi}年 {calendarData.monthGanZhi}月{" "}
+          {calendarData.dayGanZhi}日 【属{calendarData.yearShengXiao}】
         </Text>
       </View>
       <View>
-        <Text>
-          {calendarData.yearGanZhi}【{calendarData.yearShengXiao}】年{" "}
-          {calendarData.monthGanZhi}月 {calendarData.dayGanZhi}日
-        </Text>
-      </View>
-      <View>
-        <Text style={{ color: "#32a14a", fontWeight: "bold" }}>宜</Text>
+        <Tag color="primary" size="large" children="宜" className="yi jiyi" />
         {calendarData.dayYi &&
           calendarData.dayYi.map((item, index) => (
-            <Text key={index} style={{ color: "#32a14a" }}>
-              {"  "}
-              {item}
-            </Text>
+            <Tag key={index} className="yi-tag" size="medium" children={item} />
           ))}
       </View>
-      <View>
-        <Text style={{ color: "red", fontWeight: "bold" }}>忌</Text>
+      <View style={{ marginTop: "16rpx" }}>
+        <Tag color="primary" size="large" children="忌" className="ji jiyi" />
         {calendarData.dayJi &&
           calendarData.dayJi.map((item, index) => (
-            <Text key={index} style={{ color: "red" }}>
-              {"  "}
-              {item}
-            </Text>
+            <Tag key={index} className="ji-tag" size="medium" children={item} />
           ))}
       </View>
+      {/* <View className="calendar-xingzuo">
+        <Image
+          src={require("http://s-gz-7463-sihanarea.oss.dogecdn.com/guoxue/%E5%8F%8C%E5%AD%90.png")}
+          style={{ width: "100%", height: "100%" }}
+        />
+        <View className="calendar-xingzuo-text">
+          {calendarData.xingZuo}座
+          <Image
+            src={require("../../../assets/images/xingzuo/l.png")}
+            className="calendar-xingzuo-line calendar-xingzuo-line-l"
+          />
+          <Image
+            src={require("../../../assets/images/xingzuo/r.png")}
+            className="calendar-xingzuo-line calendar-xingzuo-line-r"
+          />
+        </View>
+      </View> */}
     </View>
   );
 };

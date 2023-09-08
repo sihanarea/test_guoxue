@@ -2,9 +2,9 @@ import dayjs from "dayjs";
 import { Component } from "react";
 import { connect } from "react-redux";
 import { View } from "@tarojs/components";
-import { Button,Tag } from "@taroify/core";
+import { Tag } from "@taroify/core";
 import { ArrowDown }  from "@taroify/icons"
-import DatePick from "./components/DatePick";
+// import DatePick from "./components/DatePick";
 import DatePickHuang from "./components/DatePickHuang";
 import Banner from "./components/Banner";
 import "./index.less";
@@ -81,7 +81,7 @@ class Index extends Component {
         {/* <Button onClick={()=>{this.fanye()}}>点我翻页</Button> */}
 
         <View><DatePickHuang /></View>
-        <View><DatePick /></View>
+        {/* <View><DatePick /></View> */}
       </View>
     );
   }

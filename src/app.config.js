@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-undef
 export default defineAppConfig({
-  pages: ["pages/huangli/index", "pages/index/index"],
+  pages: ["pages/bazi/index", "pages/index/index", "pages/huangli/index"],
   window: {
     backgroundTextStyle: "light",
     navigationBarBackgroundColor: "#fff",

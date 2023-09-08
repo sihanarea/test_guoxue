@@ -12,14 +12,14 @@ const DatePick = () => {
   const [value, setValue] = useState(new Date());
   const huangli = useSelector((state) => state.huangli);
   const dispatch = useDispatch();
-  console.log("test", huangli);
+  // console.log("test", huangli);
 
   const closeFn = () => {
     dispatch(close());
   };
   const confirmFn = () => {
     console.log("===", value);
-    const selectDate = dayjs(value).format("YYYY-MM-DD");
+    const selectDate = dayjs(value).format("YYYY-MM-DD HH");
     dispatch(getBaziDate(selectDate));
     dispatch(close());
   };

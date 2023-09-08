@@ -2,6 +2,9 @@
   --tabbar-item-color: #000;
   --tabbar-item-active-color: #32a14a;
 }
+.taroify-picker__confirm {
+  color: var(--picker-confirm-action-color, var(--text-link-color, var(--blue, #000)));
+}
 .huangli-index {
   width: 100%;
   height: 100vh;
@@ -13,7 +16,7 @@
 .huangli-index .huangli-btn {
   width: 100%;
   background: none;
-  color: #000;
+  color: #c69c70;
   font-weight: bold;
   height: 80rpx;
   line-height: 80rpx;

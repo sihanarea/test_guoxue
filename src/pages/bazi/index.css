@@ -1,5 +1,8 @@
 .bazi {
-  padding: 20rpx;
+  height: auto;
+}
+.bazi .pan {
+  height: 100vh;
 }
 .bazi .bazi-btn {
   width: 100%;
@@ -20,4 +23,179 @@
 }
 .bazi .btn {
   margin-top: 30rpx;
+}
+.bazi .date-pick-box {
+  display: none;
+}
+.bazi .birthday {
+  background: linear-gradient(-90deg, #57b6ee, #57e2de, #57b6ee);
+  padding: 20rpx;
+  text-align: center;
+}
+.bazi .birthday .qian {
+  color: #8a6e17;
+}
+.bazi .base-zhu {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  background: none;
+  align-items: center;
+}
+.bazi .base-zhu .base-zhu-text {
+  padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .base-zhuxing {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  align-items: center;
+  background: #f5f5f5;
+}
+.bazi .base-zhuxing .base-zhuxing-text {
+  padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .base-tiangan {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 120rpx;
+  align-items: center;
+}
+.bazi .base-tiangan .base-tiangan-text-tit {
+  font-size: 28rpx;
+  padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .base-tiangan .base-tiangan-text {
+  padding: 0 20rpx;
+  text-align: center;
+  font-size: 50rpx;
+}
+.bazi .base-dizhi {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 120rpx;
+  align-items: center;
+  background: #f5f5f5;
+}
+.bazi .base-dizhi .base-dizhi-text-tit {
+  font-size: 28rpx;
+  padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .base-dizhi .base-dizhi-text {
+  padding: 0 20rpx;
+  text-align: center;
+  font-size: 50rpx;
+}
+.bazi .base-canggan {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 120rpx;
+  padding: 10rpx 0;
+}
+.bazi .base-canggan .base-canggan-text {
+  padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .base-shishen {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 120rpx;
+  background: #f5f5f5;
+  padding: 10rpx 0;
+}
+.bazi .base-shishen .base-shishen-text {
+  padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .base-xingyun {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  align-items: center;
+}
+.bazi .base-xingyun .base-xingyun-text {
+  width: 120rpx;
+  text-align: center;
+}
+.bazi .base-zizuo {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  background: #f5f5f5;
+  align-items: center;
+}
+.bazi .base-zizuo .base-zizuo-text {
+  width: 120rpx;
+  text-align: center;
+}
+.bazi .base-nayin {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  background: #f5f5f5;
+  align-items: center;
+}
+.bazi .base-nayin .base-nayin-text {
+  width: 120rpx;
+  text-align: center;
+}
+.bazi .base-kongwang {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  align-items: center;
+}
+.bazi .base-kongwang .base-kongwang-text {
+  width: 120rpx;
+  text-align: center;
+}
+.bazi .base-shensha {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 0;
+}
+.bazi .base-shensha .base-shensha-text-tit {
+  padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .base-shensha .base-shensha-text {
+  padding: 0 30rpx 0 10rpx;
+  text-align: center;
+  color: #b69626;
+}
+.bazi .bold {
+  font-weight: bold;
+}
+.bazi .jin {
+  color: #e89126;
+}
+.bazi .mu {
+  color: #30d04f;
+}
+.bazi .shui {
+  color: #3287ef;
+}
+.bazi .huo {
+  color: #d40719;
+}
+.bazi .tu {
+  color: #8a6e17;
+}
+.taroify-tabs__line {
+  width: var(--tabs-line-width, 100%);
 }

@@ -1,4 +1,4 @@
-const useXingChongHehai = (bazi) => {
+const useXingChongHehai = (bazi, currentYun) => {
   //天干开始
   var tgguanxi = {
     甲己: "甲己合土",
@@ -16,7 +16,17 @@ const useXingChongHehai = (bazi) => {
   gans.push(bazi.getMonthGan());
   gans.push(bazi.getDayGan());
   gans.push(bazi.getTimeGan());
-
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      gans.push(currentYun.daYunGanZhi.substr(0, 1));
+    }
+    if (currentYun.liuNianGanZhi) {
+      gans.push(currentYun.liuNianGanZhi.substr(0, 1));
+    }
+    if (currentYun.liuYueGanZhi) {
+      gans.push(currentYun.liuYueGanZhi.substr(0, 1));
+    }
+  }
   var matchedTiangan = [];
   var gxs = {};
   var size = gans.length;
@@ -121,6 +131,24 @@ const useXingChongHehai = (bazi) => {
   zhis[bazi.getTimeZhi()] = zhis[bazi.getTimeZhi()]
     ? zhis[bazi.getTimeZhi()] + 1
     : 1;
+
+  if (currentYun) {
+    if (currentYun.daYunZhi) {
+      zhis[currentYun.daYunZhi] = zhis[currentYun.daYunZhi]
+        ? zhis[currentYun.daYunZhi] + 1
+        : 1;
+    }
+    if (currentYun.liuNianZhi) {
+      zhis[currentYun.liuNianZhi] = zhis[currentYun.liuNianZhi]
+        ? zhis[currentYun.liuNianZhi] + 1
+        : 1;
+    }
+    if (currentYun.liuYueZhi) {
+      zhis[currentYun.liuYueZhi] = zhis[currentYun.liuYueZhi]
+        ? zhis[currentYun.liuYueZhi] + 1
+        : 1;
+    }
+  }
 
   var matchedDizhi = [];
   var gxs = {};

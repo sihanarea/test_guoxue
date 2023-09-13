@@ -1,7 +1,7 @@
-import { View } from "@tarojs/components";
+import { View, Text } from "@tarojs/components";
 
 const GetCangGan = (props) => {
-  const { data, colorHandle } = props;
+  const { data, colorHandle, proData, type } = props;
   const dizhi = {
     甲: "甲木",
     乙: "乙木",
@@ -14,11 +14,26 @@ const GetCangGan = (props) => {
     壬: "壬水",
     癸: "癸水",
   };
-  const temp = data.map((item, index) => (
-    <View className={`base-canggan-text ${colorHandle(item)}`} key={index}>
-      {dizhi[item]}
+  const obj = type ? proData : data;
+  const temp = obj.map((item, index) => (
+    <View
+      className={`${
+        type ? "pro-canggan-text" : "base-canggan-text"
+      } ${colorHandle(item)}`}
+      key={index}
+    >
+      {type ? (
+        <>
+          <Text className={`${colorHandle(item.split("-")[0])}`}>
+            {dizhi[item.split("-")[0]]}
+          </Text>
+        </>
+      ) : (
+        dizhi[item]
+      )}
     </View>
   ));
+
   return temp;
 };
 

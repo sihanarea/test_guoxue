@@ -56,7 +56,7 @@
   align-items: center;
 }
 .bazi .pro-zhu .pro-zhu-text {
-  padding: 0 10rpx;
+  padding: 0 20rpx;
   text-align: center;
 }
 .bazi .base-zhuxing {
@@ -69,6 +69,18 @@
 }
 .bazi .base-zhuxing .base-zhuxing-text {
   padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .pro-zhuxing {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  align-items: center;
+  background: #f5f5f5;
+}
+.bazi .pro-zhuxing .pro-zhuxing-text {
+  padding: 0 20rpx;
   text-align: center;
 }
 .bazi .base-tiangan {
@@ -88,6 +100,23 @@
   text-align: center;
   font-size: 50rpx;
 }
+.bazi .pro-tiangan {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 120rpx;
+  align-items: center;
+}
+.bazi .pro-tiangan .pro-tiangan-text-tit {
+  font-size: 28rpx;
+  padding: 0 20rpx;
+  text-align: center;
+}
+.bazi .pro-tiangan .pro-tiangan-text {
+  padding: 0 16rpx;
+  text-align: center;
+  font-size: 40rpx;
+}
 .bazi .base-dizhi {
   width: 100%;
   display: flex;
@@ -106,6 +135,24 @@
   text-align: center;
   font-size: 50rpx;
 }
+.bazi .pro-dizhi {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 120rpx;
+  align-items: center;
+  background: #f5f5f5;
+}
+.bazi .pro-dizhi .pro-dizhi-text-tit {
+  font-size: 28rpx;
+  padding: 0 20rpx;
+  text-align: center;
+}
+.bazi .pro-dizhi .pro-dizhi-text {
+  padding: 0 16rpx;
+  text-align: center;
+  font-size: 40rpx;
+}
 .bazi .base-canggan {
   width: 100%;
   display: flex;
@@ -115,6 +162,20 @@
 }
 .bazi .base-canggan .base-canggan-text {
   padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .pro-canggan {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 0;
+}
+.bazi .pro-canggan .pro-canggan-text {
+  padding: 0 20rpx;
+  text-align: center;
+}
+.bazi .pro-canggan .base-canggan-text {
+  padding: 0 20rpx;
   text-align: center;
 }
 .bazi .base-shishen {
@@ -129,6 +190,17 @@
   padding: 0 30rpx;
   text-align: center;
 }
+.bazi .pro-shishen {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background: #f5f5f5;
+  padding: 10rpx 0;
+}
+.bazi .pro-shishen .pro-shishen-text {
+  padding: 0 20rpx;
+  text-align: center;
+}
 .bazi .base-xingyun {
   width: 100%;
   display: flex;
@@ -138,6 +210,17 @@
 }
 .bazi .base-xingyun .base-xingyun-text {
   width: 120rpx;
+  text-align: center;
+}
+.bazi .pro-xingyun {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  align-items: center;
+}
+.bazi .pro-xingyun .pro-xingyun-text {
+  padding: 0 20rpx;
   text-align: center;
 }
 .bazi .base-zizuo {
@@ -152,6 +235,18 @@
   width: 120rpx;
   text-align: center;
 }
+.bazi .pro-zizuo {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  background: #f5f5f5;
+  align-items: center;
+}
+.bazi .pro-zizuo .pro-zizuo-text {
+  padding: 0 20rpx;
+  text-align: center;
+}
 .bazi .base-nayin {
   width: 100%;
   display: flex;
@@ -164,6 +259,23 @@
   width: 120rpx;
   text-align: center;
 }
+.bazi .pro-nayin {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  background: #f5f5f5;
+  align-items: center;
+}
+.bazi .pro-nayin .pro-nayin-text-tit {
+  padding: 0 20rpx;
+  text-align: center;
+}
+.bazi .pro-nayin .pro-nayin-text {
+  padding: 0 16rpx;
+  text-align: center;
+  font-size: 26rpx;
+}
 .bazi .base-kongwang {
   width: 100%;
   display: flex;
@@ -173,6 +285,17 @@
 }
 .bazi .base-kongwang .base-kongwang-text {
   width: 120rpx;
+  text-align: center;
+}
+.bazi .pro-kongwang {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  align-items: center;
+}
+.bazi .pro-kongwang .pro-kongwang-text {
+  padding: 0 20rpx;
   text-align: center;
 }
 .bazi .base-shensha {
@@ -187,6 +310,22 @@
 }
 .bazi .base-shensha .base-shensha-text {
   padding: 0 30rpx 0 10rpx;
+  text-align: center;
+  color: #b69626;
+}
+.bazi .pro-shensha {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 0;
+}
+.bazi .pro-shensha .pro-shensha-text-tit {
+  padding: 0 20rpx;
+  text-align: center;
+}
+.bazi .pro-shensha .pro-shensha-text {
+  padding: 0 30rpx 0 10rpx;
+  font-size: 18rpx;
   text-align: center;
   color: #b69626;
 }

@@ -22,13 +22,19 @@ import "./index.less";
 const Index = () => {
   const huangli = useSelector((state) => state.huangli);
   const [sexValue, setSexValue] = useState(1);
-  const [liValue, setLiValue] = useState(1);
+  const [liValue, setLiValue] = useState("1");
   const [showPan, setShowPan] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastValue, setToastValue] = useState("");
   const [lunar, setLunar] = useState("");
   const [solar, setSolar] = useState("");
   const [currentBazi, setCurrentBazi] = useState("");
+  const [currentYear, setCurrentYear] = useState("");
+  const [startYunSolar, setStartYunSolar] = useState("");
+  const [daYun, setDaYun] = useState("");
+  const [daYunSize, setDaYunSize] = useState("");
+  const [currentYun, setCurrentYun] = useState("");
+
   const dispatch = useDispatch();
 
   const openFn = () => {
@@ -56,23 +62,38 @@ const Index = () => {
       console.log("选择了阴历", year, month, day);
     }
 
-    const lunarObj = Lunar.fromYmdHms(year, month, day, hour, 0, sexValue);
+    const lunarObj = Lunar.fromYmdHms(1991, 4, 17, 16, 30, sexValue);
     const solarObj = lunarObj.getSolar();
     const currBaziObj = lunarObj.getEightChar();
     currBaziObj.setSect(1);
+    computeEightChar(lunarObj);
     setLunar(lunarObj); //1男，0女
     setSolar(solarObj);
     setCurrentBazi(currBaziObj);
+    console.log("时干", lunarObj.getTimeGan());
+    console.log("时干位置", lunarObj?.getTimeGanIndex());
+    console.log("时支位置", lunarObj?.getTimeZhiIndex());
   };
 
-  const { shenShaYear, shenShaMonth, shenShaDay, shenShaTime } =
+  const {
+    shenShaYear,
+    shenShaMonth,
+    shenShaDay,
+    shenShaTime,
+    shenShadaYun,
+    shenShaliuNian,
+  } =
+    lunar &&
+    currentBazi &&
+    currentYun &&
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    lunar && currentBazi && useShenSha(lunar, sexValue, currentBazi);
+    useShenSha(lunar, sexValue, currentBazi, currentYun);
   const { tianganliuyi, dizhiliuyi } =
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    currentBazi && useXingChongHehai(currentBazi);
+    currentBazi && currentYun && useXingChongHehai(currentBazi, currentYun);
 
   console.log("lunar", lunar);
+
   //确定排盘
   const confirmPan = () => {
     if (!sexValue) {
@@ -89,8 +110,6 @@ const Index = () => {
       setShowPan(true);
       initBazi();
     }
-    // setShowPan(true);
-    // initBazi();
   };
   var CHANG_SHENG_OFFSET = {
     甲: 1,
@@ -105,7 +124,6 @@ const Index = () => {
     癸: 3,
   };
   const getChangSheng = (gan, ganIndex, zhiIndex) => {
-    if (!ganIndex) return;
     var offset = CHANG_SHENG_OFFSET[gan];
     var index = offset + (ganIndex % 2 == 0 ? zhiIndex : -zhiIndex);
     if (index >= 12) {
@@ -115,6 +133,233 @@ const Index = () => {
       index += 12;
     }
     return EightChar.CHANG_SHENG[index];
+  };
+  const getGanIndex = (gan) => {
+    for (var i = 0, j = LunarUtil.GAN.length; i < j; i++) {
+      if (gan === LunarUtil.GAN[i]) {
+        return i - 1;
+      }
+    }
+    return 0;
+  };
+  const getZhiIndex = (zhi) => {
+    for (var i = 0, j = LunarUtil.ZHI.length; i < j; i++) {
+      if (zhi === LunarUtil.ZHI[i]) {
+        return i - 1;
+      }
+    }
+    return 0;
+  };
+
+  const computeEightChar = (lunarObj) => {
+    var currentYearObj, startYunSolarObj, daYunObj, daYunSizeObj, currentYunObj;
+    var bazi = lunarObj.getEightChar();
+    var date = new Date();
+    currentYearObj = date.getFullYear();
+    var yun = bazi.getYun(sexValue);
+    startYunSolarObj = yun.getStartSolar();
+    daYunObj = yun.getDaYun();
+    daYunSizeObj = daYunObj.length;
+    var currentLunar = Lunar.fromDate(date);
+
+    var yZhi = currentLunar.getYearZhiByLiChun();
+    var yHideGan = LunarUtil.ZHI_HIDE_GAN[yZhi];
+    var yShiShenZhi = [];
+    for (var u = 0, v = yHideGan.length; u < v; u++) {
+      yShiShenZhi.push(
+        yHideGan[u] +
+          "-" +
+          LunarUtil.SHI_SHEN_ZHI[bazi.getDayGan() + yZhi + yHideGan[u]]
+      );
+    }
+
+    var mZhi = currentLunar.getMonthZhi();
+    var mHideGan = LunarUtil.ZHI_HIDE_GAN[mZhi];
+    var mShiShenZhi = [];
+    for (var u = 0, v = mHideGan.length; u < v; u++) {
+      mShiShenZhi.push(
+        mHideGan[u] +
+          "-" +
+          LunarUtil.SHI_SHEN_ZHI[bazi.getDayGan() + mZhi + mHideGan[u]]
+      );
+    }
+
+    var rZhi = currentLunar.getDayZhi();
+    var rHideGan = LunarUtil.ZHI_HIDE_GAN[rZhi];
+    var rShiShenZhi = [];
+    for (var u = 0, v = rHideGan.length; u < v; u++) {
+      rShiShenZhi.push(
+        rHideGan[u] +
+          "-" +
+          LunarUtil.SHI_SHEN_ZHI[bazi.getDayGan() + rZhi + rHideGan[u]]
+      );
+    }
+
+    var sZhi = currentLunar.getTimeZhi();
+    var sHideGan = LunarUtil.ZHI_HIDE_GAN[sZhi];
+    var sShiShenZhi = [];
+    for (var u = 0, v = sHideGan.length; u < v; u++) {
+      sShiShenZhi.push(
+        sHideGan[u] +
+          "-" +
+          LunarUtil.SHI_SHEN_ZHI[bazi.getDayGan() + sZhi + sHideGan[u]]
+      );
+    }
+
+    var currentYunObj = {
+      daYunWuXing: "",
+      liuNianWuXing:
+        LunarUtil.WU_XING_GAN[currentLunar.getYearGanByLiChun()] +
+        LunarUtil.WU_XING_ZHI[currentLunar.getYearZhiByLiChun()],
+      liuYueWuXing:
+        LunarUtil.WU_XING_GAN[currentLunar.getMonthGan()] +
+        LunarUtil.WU_XING_ZHI[currentLunar.getMonthZhi()],
+      liuRiWuXing:
+        LunarUtil.WU_XING_GAN[currentLunar.getDayGan()] +
+        LunarUtil.WU_XING_ZHI[currentLunar.getDayZhi()],
+      liuShiWuXing:
+        LunarUtil.WU_XING_GAN[currentLunar.getTimeGan()] +
+        LunarUtil.WU_XING_ZHI[currentLunar.getTimeZhi()],
+
+      daYunDiShi: "",
+      liuNianDiShi: getChangSheng(
+        bazi.getDayGan(),
+        bazi.getDayGanIndex(),
+        currentLunar.getYearZhiIndexByLiChun()
+      ),
+      liuYueDiShi: getChangSheng(
+        bazi.getDayGan(),
+        bazi.getDayGanIndex(),
+        currentLunar.getMonthZhiIndex()
+      ),
+      liuRiDiShi: getChangSheng(
+        bazi.getDayGan(),
+        bazi.getDayGanIndex(),
+        currentLunar.getDayZhiIndex()
+      ),
+      liuShiDiShi: getChangSheng(
+        bazi.getDayGan(),
+        bazi.getDayGanIndex(),
+        currentLunar.getTimeZhiIndex()
+      ),
+
+      daYunChangSheng: "",
+      liuNianChangSheng: getChangSheng(
+        currentLunar.getYearGanByLiChun(),
+        currentLunar.getYearGanIndexByLiChun(),
+        currentLunar.getYearZhiIndexByLiChun()
+      ),
+      liuYueChangSheng: getChangSheng(
+        currentLunar.getMonthGan(),
+        currentLunar.getMonthGanIndex(),
+        currentLunar.getMonthZhiIndex()
+      ),
+      liuRiChangSheng: getChangSheng(
+        currentLunar.getDayGan(),
+        currentLunar.getDayGanIndex(),
+        currentLunar.getDayZhiIndex()
+      ),
+      liuShiChangSheng: getChangSheng(
+        currentLunar.getTimeGan(),
+        currentLunar.getTimeGanIndex(),
+        currentLunar.getTimeZhiIndex()
+      ),
+
+      daYunXunKong: "",
+      liuNianXunKong: LunarUtil.getXunKong(
+        currentLunar.getYearInGanZhiByLiChun()
+      ),
+      liuYueXunKong: LunarUtil.getXunKong(currentLunar.getMonthInGanZhi()),
+      liuRiXunKong: LunarUtil.getXunKong(currentLunar.getDayInGanZhi()),
+      liuShiXunKong: LunarUtil.getXunKong(currentLunar.getTimeInGanZhi()),
+
+      daYunNaYin: "",
+      liuNianNaYin: LunarUtil.NAYIN[currentLunar.getYearInGanZhiByLiChun()],
+      liuYueNaYin: LunarUtil.NAYIN[currentLunar.getMonthInGanZhi()],
+      liuRiNaYin: LunarUtil.NAYIN[currentLunar.getDayInGanZhi()],
+      liuShiNaYin: LunarUtil.NAYIN[currentLunar.getTimeInGanZhi()],
+
+      daYunShiShen: "",
+      daYunShiShenZhi: [],
+      liuNianGanZhi: currentLunar.getYearInGanZhiByLiChun(),
+      liuNianShiShen:
+        LunarUtil.SHI_SHEN_GAN[
+          bazi.getDayGan() + currentLunar.getYearGanByLiChun()
+        ],
+      liuNianShiShenZhi: yShiShenZhi,
+      liuYueGanZhi: currentLunar.getMonthInGanZhi(),
+      liuYueShiShen:
+        LunarUtil.SHI_SHEN_GAN[bazi.getDayGan() + currentLunar.getMonthGan()],
+      liuYueShiShenZhi: mShiShenZhi,
+      liuRiGanZhi: currentLunar.getDayInGanZhi(),
+      liuRiShiShen:
+        LunarUtil.SHI_SHEN_GAN[bazi.getDayGan() + currentLunar.getDayGan()],
+      liuRiShiShenZhi: rShiShenZhi,
+      liuShiGanZhi: currentLunar.getTimeInGanZhi(),
+      liuShiShiShen:
+        LunarUtil.SHI_SHEN_GAN[bazi.getDayGan() + currentLunar.getTimeGan()],
+      liuShiShiShenZhi: sShiShenZhi,
+    };
+    currentYunObj.liuNianGan = currentYunObj.liuNianGanZhi.substr(0, 1);
+    currentYunObj.liuNianZhi = currentYunObj.liuNianGanZhi.substr(1);
+    currentYunObj.liuYueGan = currentYunObj.liuYueGanZhi.substr(0, 1);
+    currentYunObj.liuYueZhi = currentYunObj.liuYueGanZhi.substr(1);
+    currentYunObj.liuRiGan = currentYunObj.liuRiGanZhi.substr(0, 1);
+    currentYunObj.liuRiZhi = currentYunObj.liuRiGanZhi.substr(1);
+    currentYunObj.liuShiGan = currentYunObj.liuShiGanZhi.substr(0, 1);
+    currentYunObj.liuShiZhi = currentYunObj.liuShiGanZhi.substr(1);
+
+    for (var i = 0; i < daYunSizeObj; i++) {
+      var d = daYunObj[i];
+      if (
+        d.getStartYear() <= currentYearObj &&
+        currentYearObj <= d.getEndYear()
+      ) {
+        var gz = d.getGanZhi();
+        if (gz) {
+          var g = gz.substr(0, 1);
+          var z = gz.substr(1);
+          var zIndex = getZhiIndex(z);
+          currentYunObj.daYunWuXing =
+            LunarUtil.WU_XING_GAN[g] + LunarUtil.WU_XING_ZHI[z];
+          currentYunObj.daYunDiShi = getChangSheng(
+            bazi.getDayGan(),
+            bazi.getDayGanIndex(),
+            zIndex
+          );
+          currentYunObj.daYunChangSheng = getChangSheng(
+            g,
+            getGanIndex(g),
+            zIndex
+          );
+          currentYunObj.daYunXunKong = LunarUtil.getXunKong(gz);
+          currentYunObj.daYunNaYin = LunarUtil.NAYIN[gz];
+
+          currentYunObj.daYunGan = g;
+          currentYunObj.daYunZhi = z;
+          currentYunObj.daYunGanZhi = gz;
+          currentYunObj.daYunShiShen =
+            LunarUtil.SHI_SHEN_GAN[bazi.getDayGan() + g];
+          var dHideGan = LunarUtil.ZHI_HIDE_GAN[z];
+          var dShiShenZhi = [];
+          for (var x = 0, y = dHideGan.length; x < y; x++) {
+            dShiShenZhi.push(
+              dHideGan[x] +
+                "-" +
+                LunarUtil.SHI_SHEN_ZHI[bazi.getDayGan() + z + dHideGan[x]]
+            );
+          }
+          currentYunObj.daYunShiShenZhi = dShiShenZhi;
+        }
+        break;
+      }
+    }
+    setCurrentYear(currentYearObj);
+    setStartYunSolar(startYunSolarObj);
+    setDaYun(daYunObj);
+    setDaYunSize(daYunSizeObj);
+    setCurrentYun(currentYunObj);
+    console.log("currentYunObj", currentYunObj);
   };
 
   const colorHandle = (tiangandizhi) => {
@@ -238,9 +483,6 @@ const Index = () => {
                         阴历:{lunar.getYearInChinese()}年
                         {lunar.getMonthInChinese()}月{lunar.getDayInChinese()}{" "}
                         {lunar.getTimeZhi()}时{" "}
-                        {/* <Tag className="qian">
-                    （{sexValue === 1 ? "乾" : "坤"}造）
-                  </Text> */}
                         <Tag
                           color="primary"
                           children={`${sexValue === 1 ? "乾" : "坤"}造`}
@@ -474,9 +716,21 @@ const Index = () => {
                       <View className="base-zizuo-text">
                         {getChangSheng(
                           currentBazi?.getYearGan(),
-                          // lunar?.getYearGanIndexExact(),
+                          lunar?.getYearGanIndexExact(),
                           lunar.getYearZhiIndexExact()
-                        )}
+                        ).length === 1
+                          ? `${
+                              getChangSheng(
+                                currentBazi?.getYearGan(),
+                                lunar?.getYearGanIndexExact(),
+                                lunar.getYearZhiIndexExact()
+                              ) + " "
+                            }`
+                          : getChangSheng(
+                              currentBazi?.getYearGan(),
+                              lunar?.getYearGanIndexExact(),
+                              lunar.getYearZhiIndexExact()
+                            )}
                       </View>
                       <View className="base-zizuo-text">
                         {getChangSheng(
@@ -598,25 +852,61 @@ const Index = () => {
                       <Text className="pro-zhu-text">日柱</Text>
                       <Text className="pro-zhu-text">时柱</Text>
                     </View>
-                    <View className="base-zhuxing">
-                      <Text className="base-zhuxing-text">主星</Text>
-                      <Text className="base-zhuxing-text bold">
+                    <View className="pro-zhuxing">
+                      <Text className="pro-zhuxing-text">主星</Text>
+                      <Text className="pro-zhuxing-text bold">
+                        {currentYun.daYunShiShen}
+                      </Text>
+                      <Text className="pro-zhuxing-text bold">
+                        {currentYun.liuNianShiShen}
+                      </Text>
+                      <Text className="pro-zhuxing-text bold">
                         {currentBazi.getYearShiShenGan()}
                       </Text>
-                      <Text className="base-zhuxing-text bold">
+                      <Text className="pro-zhuxing-text bold">
                         {currentBazi.getMonthShiShenGan()}
                       </Text>
-                      <Text className="base-zhuxing-text bold">
+                      <Text className="pro-zhuxing-text bold">
                         元{sexValue === 1 ? "男" : "女"}
                       </Text>
-                      <Text className="base-zhuxing-text bold">
+                      <Text className="pro-zhuxing-text bold">
                         {currentBazi.getTimeShiShenGan()}
                       </Text>
                     </View>
-                    <View className="base-tiangan">
-                      <Text className="base-tiangan-text-tit">天干</Text>
+                    <View className="pro-tiangan">
+                      <Text className="pro-tiangan-text-tit">天干</Text>
                       <View
-                        className={`base-tiangan-text bold ${colorHandle(
+                        className={`pro-tiangan-text bold ${colorHandle(
+                          currentYun.liuNianGanZhi.substr(0, 1)
+                        )}`}
+                      >
+                        {currentYun.liuNianGanZhi.substr(0, 1)}
+                        <Image
+                          src={ImgHandle(currentYun.liuNianGanZhi.substr(0, 1))}
+                          style={{
+                            width: "30rpx",
+                            height: "30rpx",
+                            marginLeft: "0rpx",
+                          }}
+                        />
+                      </View>
+                      <View
+                        className={`pro-tiangan-text bold ${colorHandle(
+                          currentYun.daYunGanZhi.substr(0, 1)
+                        )}`}
+                      >
+                        {currentYun.daYunGanZhi.substr(0, 1)}
+                        <Image
+                          src={ImgHandle(currentYun.daYunGanZhi.substr(0, 1))}
+                          style={{
+                            width: "30rpx",
+                            height: "30rpx",
+                            marginLeft: "0rpx",
+                          }}
+                        />
+                      </View>
+                      <View
+                        className={`pro-tiangan-text bold ${colorHandle(
                           currentBazi?.getYearGan()
                         )}`}
                       >
@@ -626,12 +916,12 @@ const Index = () => {
                           style={{
                             width: "30rpx",
                             height: "30rpx",
-                            marginLeft: "10rpx",
+                            marginLeft: "0rpx",
                           }}
                         />
                       </View>
                       <View
-                        className={`base-tiangan-text bold ${colorHandle(
+                        className={`pro-tiangan-text bold ${colorHandle(
                           currentBazi.getMonthGan()
                         )}`}
                       >
@@ -641,12 +931,12 @@ const Index = () => {
                           style={{
                             width: "30rpx",
                             height: "30rpx",
-                            marginLeft: "10rpx",
+                            marginLeft: "0rpx",
                           }}
                         />
                       </View>
                       <View
-                        className={`base-tiangan-text bold ${colorHandle(
+                        className={`pro-tiangan-text bold ${colorHandle(
                           currentBazi.getDayGan()
                         )}`}
                       >
@@ -656,12 +946,12 @@ const Index = () => {
                           style={{
                             width: "30rpx",
                             height: "30rpx",
-                            marginLeft: "10rpx",
+                            marginLeft: "0rpx",
                           }}
                         />
                       </View>
                       <View
-                        className={`base-tiangan-text bold ${colorHandle(
+                        className={`pro-tiangan-text bold ${colorHandle(
                           currentBazi.getTimeGan()
                         )}`}
                       >
@@ -671,15 +961,45 @@ const Index = () => {
                           style={{
                             width: "30rpx",
                             height: "30rpx",
-                            marginLeft: "10rpx",
+                            marginLeft: "0rpx",
                           }}
                         />
                       </View>
                     </View>
-                    <View className="base-dizhi">
-                      <Text className="base-dizhi-text-tit">地支</Text>
+                    <View className="pro-dizhi">
+                      <Text className="pro-dizhi-text-tit">地支</Text>
                       <View
-                        className={`base-dizhi-text bold ${colorHandle(
+                        className={`pro-dizhi-text bold ${colorHandle(
+                          currentYun.liuNianGanZhi.substr(1)
+                        )}`}
+                      >
+                        {currentYun.liuNianGanZhi.substr(1)}
+                        <Image
+                          src={ImgHandle(currentYun.liuNianGanZhi.substr(1))}
+                          style={{
+                            width: "30rpx",
+                            height: "30rpx",
+                            marginLeft: "0rpx",
+                          }}
+                        />
+                      </View>
+                      <View
+                        className={`pro-dizhi-text bold ${colorHandle(
+                          currentYun.daYunGanZhi.substr(1)
+                        )}`}
+                      >
+                        {currentYun.daYunGanZhi.substr(1)}
+                        <Image
+                          src={ImgHandle(currentYun.daYunGanZhi.substr(1))}
+                          style={{
+                            width: "30rpx",
+                            height: "30rpx",
+                            marginLeft: "0rpx",
+                          }}
+                        />
+                      </View>
+                      <View
+                        className={`pro-dizhi-text bold ${colorHandle(
                           currentBazi.getYearZhi()
                         )}`}
                       >
@@ -689,12 +1009,12 @@ const Index = () => {
                           style={{
                             width: "30rpx",
                             height: "30rpx",
-                            marginLeft: "10rpx",
+                            marginLeft: "0rpx",
                           }}
                         />
                       </View>
                       <View
-                        className={`base-dizhi-text bold ${colorHandle(
+                        className={`pro-dizhi-text bold ${colorHandle(
                           currentBazi.getMonthZhi()
                         )}`}
                       >
@@ -704,12 +1024,12 @@ const Index = () => {
                           style={{
                             width: "30rpx",
                             height: "30rpx",
-                            marginLeft: "10rpx",
+                            marginLeft: "0rpx",
                           }}
                         />
                       </View>
                       <View
-                        className={`base-dizhi-text bold ${colorHandle(
+                        className={`pro-dizhi-text bold ${colorHandle(
                           currentBazi.getDayZhi()
                         )}`}
                       >
@@ -719,12 +1039,12 @@ const Index = () => {
                           style={{
                             width: "30rpx",
                             height: "30rpx",
-                            marginLeft: "10rpx",
+                            marginLeft: "0rpx",
                           }}
                         />
                       </View>
                       <View
-                        className={`base-dizhi-text bold ${colorHandle(
+                        className={`pro-dizhi-text bold ${colorHandle(
                           currentBazi.getTimeZhi()
                         )}`}
                       >
@@ -734,13 +1054,27 @@ const Index = () => {
                           style={{
                             width: "30rpx",
                             height: "30rpx",
-                            marginLeft: "10rpx",
+                            marginLeft: "0rpx",
                           }}
                         />
                       </View>
                     </View>
-                    <View className="base-canggan">
-                      <Text className="base-canggan-text">藏干</Text>
+                    <View className="pro-canggan">
+                      <Text className="pro-canggan-text">藏干</Text>
+                      <View>
+                        <GetCangGan
+                          proData={currentYun.liuNianShiShenZhi}
+                          colorHandle={colorHandle}
+                          type="pro"
+                        />
+                      </View>
+                      <View>
+                        <GetCangGan
+                          proData={currentYun.daYunShiShenZhi}
+                          colorHandle={colorHandle}
+                          type="pro"
+                        />
+                      </View>
                       <View>
                         <GetCangGan
                           data={currentBazi.getYearHideGan()}
@@ -766,119 +1100,238 @@ const Index = () => {
                         />
                       </View>
                     </View>
-                    <View className="base-shishen">
-                      <Text className="base-shishen-text">十神</Text>
+                    <View className="pro-shishen">
+                      <Text className="pro-shishen-text">十神</Text>
+                      <View>
+                        {currentYun.liuNianShiShenZhi.map((item, index) => (
+                          <View className="pro-shishen-text" key={index}>
+                            {item.split("-")[1]}
+                          </View>
+                        ))}
+                      </View>
+                      <View>
+                        {currentYun.daYunShiShenZhi.map((item, index) => (
+                          <View className="pro-shishen-text" key={index}>
+                            {item.split("-")[1]}
+                          </View>
+                        ))}
+                      </View>
+
                       <View>
                         {currentBazi.getYearShiShenZhi().map((item, index) => (
-                          <View className="base-shishen-text" key={index}>
+                          <View className="pro-shishen-text" key={index}>
                             {item}
                           </View>
                         ))}
                       </View>
                       <View>
                         {currentBazi.getMonthShiShenZhi().map((item, index) => (
-                          <View className="base-shishen-text" key={index}>
+                          <View className="pro-shishen-text" key={index}>
                             {item}
                           </View>
                         ))}
                       </View>
                       <View>
                         {currentBazi.getDayShiShenZhi().map((item, index) => (
-                          <View className="base-shishen-text" key={index}>
+                          <View className="pro-shishen-text" key={index}>
                             {item}
                           </View>
                         ))}
                       </View>
                       <View>
                         {currentBazi.getTimeShiShenZhi().map((item, index) => (
-                          <View className="base-shishen-text" key={index}>
+                          <View className="pro-shishen-text" key={index}>
                             {item}
                           </View>
                         ))}
                       </View>
                     </View>
-                    <View className="base-xingyun">
-                      <Text className="base-xingyun-text">星运</Text>
-                      <View className="base-xingyun-text">
-                        {currentBazi.getYearDiShi()}
+                    <View className="pro-xingyun">
+                      <Text className="pro-xingyun-text">星运</Text>
+                      <View className="pro-xingyun-text">
+                        {currentYun.liuNianDiShi.length === 1
+                          ? `${currentYun.liuNianDiShi + "　"}`
+                          : currentYun.liuNianDiShi}
                       </View>
-                      <View className="base-xingyun-text">
-                        {currentBazi.getMonthDiShi()}
+                      <View className="pro-xingyun-text">
+                        {currentYun.daYunDiShi.length === 1
+                          ? `${currentYun.daYunDiShi + "　"}`
+                          : currentYun.daYunDiShi}
                       </View>
-                      <View className="base-xingyun-text">
-                        {currentBazi.getDayDiShi()}
+                      <View className="pro-xingyun-text">
+                        {currentBazi.getYearDiShi().length === 1
+                          ? `${currentBazi.getYearDiShi() + "　"}`
+                          : currentBazi.getYearDiShi()}
                       </View>
-                      <View className="base-xingyun-text">
-                        {currentBazi.getTimeDiShi()}
+                      <View className="pro-xingyun-text">
+                        {currentBazi.getMonthDiShi().length === 1
+                          ? `${currentBazi.getMonthDiShi() + "　"}`
+                          : currentBazi.getMonthDiShi()}
+                      </View>
+                      <View className="pro-xingyun-text">
+                        {currentBazi.getDayDiShi().length === 1
+                          ? `${currentBazi.getDayDiShi() + "　"}`
+                          : currentBazi.getDayDiShi()}
+                      </View>
+                      <View className="pro-xingyun-text">
+                        {currentBazi.getTimeDiShi().length === 1
+                          ? `${currentBazi.getTimeDiShi() + "　"}`
+                          : currentBazi.getTimeDiShi()}
                       </View>
                     </View>
-                    <View className="base-zizuo">
-                      <Text className="base-zizuo-text">自坐</Text>
-                      <View className="base-zizuo-text">
+                    <View className="pro-zizuo">
+                      <Text className="pro-zizuo-text">自坐</Text>
+                      <View className="pro-zizuo-text">
+                        {currentYun.liuNianChangSheng.length === 1
+                          ? `${currentYun.liuNianChangSheng + "　"}`
+                          : currentYun.liuNianChangSheng}
+                      </View>
+                      <View className="pro-zizuo-text">
+                        {currentYun.daYunChangSheng.length === 1
+                          ? `${currentYun.daYunChangSheng + "　"}`
+                          : currentYun.daYunChangSheng}
+                      </View>
+                      <View className="pro-zizuo-text">
                         {getChangSheng(
                           currentBazi?.getYearGan(),
-                          // lunar?.getYearGanIndexExact(),
+                          lunar?.getYearGanIndexExact(),
                           lunar.getYearZhiIndexExact()
-                        )}
+                        ).length === 1
+                          ? `${
+                              getChangSheng(
+                                currentBazi?.getYearGan(),
+                                lunar?.getYearGanIndexExact(),
+                                lunar.getYearZhiIndexExact()
+                              ) + "　"
+                            }`
+                          : getChangSheng(
+                              currentBazi?.getYearGan(),
+                              lunar?.getYearGanIndexExact(),
+                              lunar.getYearZhiIndexExact()
+                            )}
                       </View>
-                      <View className="base-zizuo-text">
+                      <View className="pro-zizuo-text">
                         {getChangSheng(
-                          currentBazi.getMonthGan(),
-                          lunar.getMonthGanIndexExact(),
+                          currentBazi?.getMonthGan(),
+                          lunar?.getMonthGanIndexExact(),
                           lunar.getMonthZhiIndexExact()
-                        )}
+                        ).length === 1
+                          ? `${
+                              getChangSheng(
+                                currentBazi?.getMonthGan(),
+                                lunar?.getMonthGanIndexExact(),
+                                lunar.getMonthZhiIndexExact()
+                              ) + "　"
+                            }`
+                          : getChangSheng(
+                              currentBazi?.getMonthGan(),
+                              lunar?.getMonthGanIndexExact(),
+                              lunar.getMonthZhiIndexExact()
+                            )}
                       </View>
-                      <View className="base-zizuo-text">
+                      <View className="pro-zizuo-text">
                         {getChangSheng(
-                          currentBazi.getDayGan(),
-                          lunar.getDayGanIndexExact(),
+                          currentBazi?.getDayGan(),
+                          lunar?.getDayGanIndexExact(),
                           lunar.getDayZhiIndexExact()
-                        )}
+                        ).length === 1
+                          ? `${
+                              getChangSheng(
+                                currentBazi?.getDayGan(),
+                                lunar?.getDayGanIndexExact(),
+                                lunar.getDayZhiIndexExact()
+                              ) + "　"
+                            }`
+                          : getChangSheng(
+                              currentBazi?.getDayGan(),
+                              lunar?.getDayGanIndexExact(),
+                              lunar.getDayZhiIndexExact()
+                            )}
                       </View>
-                      <View className="base-zizuo-text">
+                      <View className="pro-zizuo-text">
                         {getChangSheng(
-                          currentBazi.getTimeGan(),
-                          lunar.getTimeGanIndex(),
+                          currentBazi?.getTimeGan(),
+                          lunar?.getTimeGanIndex(),
                           lunar.getTimeZhiIndex()
-                        )}
+                        ).length === 1
+                          ? `${
+                              getChangSheng(
+                                currentBazi?.getTimeGan(),
+                                lunar?.getTimeGanIndex(),
+                                lunar.getTimeZhiIndex()
+                              ) + "　"
+                            }`
+                          : getChangSheng(
+                              currentBazi?.getTimeGan(),
+                              lunar?.getTimeGanIndex(),
+                              lunar.getTimeZhiIndex()
+                            )}
                       </View>
                     </View>
-                    <View className="base-kongwang">
-                      <Text className="base-kongwang-text">空亡</Text>
-                      <View className="base-kongwang-text">
+                    <View className="pro-kongwang">
+                      <Text className="pro-kongwang-text">空亡</Text>
+                      <View className="pro-kongwang-text">
+                        {currentYun.liuNianXunKong}
+                      </View>
+                      <View className="pro-kongwang-text">
+                        {currentYun.daYunXunKong}
+                      </View>
+                      <View className="pro-kongwang-text">
                         {currentBazi.getYearXunKong()}
                       </View>
-                      <View className="base-kongwang-text">
+                      <View className="pro-kongwang-text">
                         {currentBazi.getMonthXunKong()}
                       </View>
-                      <View className="base-kongwang-text">
+                      <View className="pro-kongwang-text">
                         {currentBazi.getDayXunKong()}
                       </View>
-                      <View className="base-kongwang-text">
+                      <View className="pro-kongwang-text">
                         {currentBazi.getTimeXunKong()}
                       </View>
                     </View>
-                    <View className="base-nayin">
-                      <Text className="base-nayin-text">纳音</Text>
-                      <View className="base-nayin-text">
+                    <View className="pro-nayin">
+                      <Text className="pro-nayin-text-tit">纳音</Text>
+                      <View className="pro-nayin-text">
+                        {currentYun.liuNianNaYin}
+                      </View>
+                      <View className="pro-nayin-text">
+                        {currentYun.daYunNaYin}
+                      </View>
+                      <View className="pro-nayin-text">
                         {currentBazi.getYearNaYin()}
                       </View>
-                      <View className="base-nayin-text">
+                      <View className="pro-nayin-text">
                         {currentBazi.getMonthNaYin()}
                       </View>
-                      <View className="base-nayin-text">
+                      <View className="pro-nayin-text">
                         {currentBazi.getDayNaYin()}
                       </View>
-                      <View className="base-nayin-text">
+                      <View className="pro-nayin-text">
                         {currentBazi.getTimeNaYin()}
                       </View>
                     </View>
-                    <View className="base-shensha">
-                      <Text className="base-shensha-text-tit">神煞</Text>
+                    <View className="pro-shensha">
+                      <Text className="pro-shensha-text-tit">神煞</Text>
+                      <View>
+                        {shenShaliuNian &&
+                          shenShaliuNian?.map((item, index) => (
+                            <View className="pro-shensha-text" key={index}>
+                              {item}
+                            </View>
+                          ))}
+                      </View>
+                      <View>
+                        {shenShadaYun &&
+                          shenShadaYun?.map((item, index) => (
+                            <View className="pro-shensha-text" key={index}>
+                              {item}
+                            </View>
+                          ))}
+                      </View>
                       <View>
                         {shenShaYear &&
                           shenShaYear?.map((item, index) => (
-                            <View className="base-shensha-text" key={index}>
+                            <View className="pro-shensha-text" key={index}>
                               {item}
                             </View>
                           ))}
@@ -886,7 +1339,7 @@ const Index = () => {
                       <View>
                         {shenShaMonth &&
                           shenShaMonth?.map((item, index) => (
-                            <View className="base-shensha-text" key={index}>
+                            <View className="pro-shensha-text" key={index}>
                               {item}
                             </View>
                           ))}
@@ -894,7 +1347,7 @@ const Index = () => {
                       <View>
                         {shenShaDay &&
                           shenShaDay?.map((item, index) => (
-                            <View className="base-shensha-text" key={index}>
+                            <View className="pro-shensha-text" key={index}>
                               {item}
                             </View>
                           ))}
@@ -902,7 +1355,7 @@ const Index = () => {
                       <View>
                         {shenShaTime &&
                           shenShaTime?.map((item, index) => (
-                            <View className="base-shensha-text" key={index}>
+                            <View className="pro-shensha-text" key={index}>
                               {item}
                             </View>
                           ))}

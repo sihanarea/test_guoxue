@@ -1,5 +1,5 @@
-const useShenSha = (lunar, gender, bazi) => {
-  if (!lunar || !gender || !bazi) return;
+const useShenSha = (lunar, gender, bazi, currentYun) => {
+  if (!lunar || !gender || !bazi || !currentYun) return;
   // 年柱神煞
   var shenShaYear = [];
   // 月柱神煞
@@ -8,6 +8,10 @@ const useShenSha = (lunar, gender, bazi) => {
   var shenShaDay = [];
   // 时柱神煞
   var shenShaTime = [];
+  // 大运神煞
+  var shenShadaYun = [];
+  // 流年神煞
+  var shenShaliuNian = [];
 
   //四柱天干顺序同时出现
   var shenShaGanGan = {
@@ -709,7 +713,55 @@ const useShenSha = (lunar, gender, bazi) => {
     //   "大海水钗钏金",
     // ],
   };
+  // 年支查大运流年地支
+  var shenShaYearZhidaYunliuNianZhi = {
+    丧门: [
+      "子寅",
+      "丑卯",
+      "寅辰",
+      "卯巳",
+      "辰午",
+      "巳未",
+      "午申",
+      "未酉",
+      "申戌",
+      "酉亥",
+      "戌子",
+      "亥丑",
+    ],
+    吊客: [
+      "子戌",
+      "丑亥",
+      "寅子",
+      "卯丑",
+      "辰寅",
+      "巳卯",
+      "午辰",
+      "未巳",
+      "申午",
+      "酉未",
+      "戌申",
+      "亥酉",
+    ],
+  };
 
+  // 年日地支查大运流年地支
+  var shenShaYearZhiDayZhidaYunliuNianZhi = {
+    披麻: [
+      "子酉",
+      "丑戌",
+      "寅亥",
+      "卯子",
+      "辰丑",
+      "巳寅",
+      "午卯",
+      "未辰",
+      "申巳",
+      "酉午",
+      "戌未",
+      "亥申",
+    ],
+  };
   //年支查地支
   var shenShaYearZhiDiZhi = {
     红鸾: [
@@ -2179,6 +2231,589 @@ const useShenSha = (lunar, gender, bazi) => {
     shenShaTime.push(i);
   }
   // 时柱神煞结束
+  // 大运神煞开始
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearDayGanZhi) {
+        var gzs = shenShaYearDayGanZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (
+            gz == bazi.getYearGan() + currentYun.daYunGanZhi.substr(1) ||
+            gz == bazi.getDayGan() + currentYun.daYunGanZhi.substr(1)
+          ) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearDayZhiZhi) {
+        var gzs = shenShaYearDayZhiZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (
+            gz == bazi.getYearZhi() + currentYun.daYunGanZhi.substr(1) ||
+            gz == bazi.getDayZhi() + currentYun.daYunGanZhi.substr(1)
+          ) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearNaYinYearDiZhi) {
+        var gzs = shenShaYearNaYinYearDiZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (gz == bazi.getYearNaYin() + currentYun.daYunGanZhi.substr(1)) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaMonthZhiGanZhi) {
+        var gzs = shenShaMonthZhiGanZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (
+            gz == bazi.getMonthZhi() + currentYun.daYunGanZhi.substr(0, 1) ||
+            gz == bazi.getMonthZhi() + currentYun.daYunGanZhi.substr(1)
+          ) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaDayGanDiZhi) {
+        var gzs = shenShaDayGanDiZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (gz == bazi.getDayGan() + currentYun.daYunGanZhi.substr(1)) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearZhiDiZhi) {
+        var gzs = shenShaYearZhiDiZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (gz == bazi.getYearZhi() + currentYun.daYunGanZhi.substr(1)) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearZhiGanZhi) {
+        var gzs = shenShaYearZhiGanZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (
+            gz ==
+            bazi.getYearZhi() +
+              currentYun.daYunGanZhi.substr(0, 1) +
+              currentYun.daYunGanZhi.substr(1)
+          ) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearGanDayGanGanZhi) {
+        var gzs = shenShaYearGanDayGanGanZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (
+            gz ==
+              bazi.getYearGan() +
+                currentYun.daYunGanZhi.substr(0, 1) +
+                currentYun.daYunGanZhi.substr(1) ||
+            gz ==
+              bazi.getDayGan() +
+                currentYun.daYunGanZhi.substr(0, 1) +
+                currentYun.daYunGanZhi.substr(1)
+          ) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearZhidaYunliuNianZhi) {
+        var gzs = shenShaYearZhidaYunliuNianZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (gz == bazi.getYearZhi() + currentYun.daYunGanZhi.substr(1)) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearZhiDayZhidaYunliuNianZhi) {
+        var gzs = shenShaYearZhiDayZhidaYunliuNianZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (
+            gz == bazi.getYearZhi() + currentYun.daYunGanZhi.substr(1) ||
+            gz == bazi.getDayZhi() + currentYun.daYunGanZhi.substr(1)
+          ) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearZhiZhiNN) {
+        var gzs = shenShaYearZhiZhiNN[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (gz == bazi.getYearZhi() + currentYun.daYunGanZhi.substr(1)) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearNaYinDiZhi) {
+        var gzs = shenShaYearNaYinDiZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (gz == bazi.getYearNaYin() + currentYun.daYunGanZhi.substr(1)) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearNaYinGanZhi) {
+        var gzs = shenShaYearNaYinGanZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (
+            gz ==
+            bazi.getYearNaYin() +
+              currentYun.daYunGanZhi.substr(0, 1) +
+              currentYun.daYunGanZhi.substr(1)
+          ) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaYearNaYinDayNaYin) {
+        var gzs = shenShaYearNaYinDayNaYin[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (
+            gz == bazi.getYearNaYin() + currentYun.daYunNaYin ||
+            gz == bazi.getDayNaYin() + currentYun.daYunNaYin
+          ) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  if (currentYun) {
+    if (currentYun.daYunGanZhi) {
+      shenShaTemp = {};
+      for (var i in shenShaDayZhiDiZhi) {
+        var gzs = shenShaDayZhiDiZhi[i];
+        for (var j = 0, k = gzs.length; j < k; j++) {
+          var gz = gzs[j];
+          if (gz == bazi.getDayZhi() + currentYun.daYunGanZhi.substr(1)) {
+            shenShaTemp[i] = true;
+          }
+        }
+      }
+      for (var i in shenShaTemp) {
+        shenShadaYun.push(i);
+      }
+    }
+  }
+
+  // 大运神煞结束
+
+  // 流年神煞开始
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearDayGanZhi) {
+      var gzs = shenShaYearDayGanZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (
+          gz == bazi.getYearGan() + currentYun.liuNianGanZhi.substr(1) ||
+          gz == bazi.getDayGan() + currentYun.liuNianGanZhi.substr(1)
+        ) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearDayZhiZhi) {
+      var gzs = shenShaYearDayZhiZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (
+          gz == bazi.getYearZhi() + currentYun.liuNianGanZhi.substr(1) ||
+          gz == bazi.getDayZhi() + currentYun.liuNianGanZhi.substr(1)
+        ) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearNaYinYearDiZhi) {
+      var gzs = shenShaYearNaYinYearDiZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (gz == bazi.getYearNaYin() + currentYun.liuNianGanZhi.substr(1)) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaMonthZhiGanZhi) {
+      var gzs = shenShaMonthZhiGanZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (
+          gz == bazi.getMonthZhi() + currentYun.liuNianGanZhi.substr(0, 1) ||
+          gz == bazi.getMonthZhi() + currentYun.liuNianGanZhi.substr(1)
+        ) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaDayGanDiZhi) {
+      var gzs = shenShaDayGanDiZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (gz == bazi.getDayGan() + currentYun.liuNianGanZhi.substr(1)) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearZhiDiZhi) {
+      var gzs = shenShaYearZhiDiZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (gz == bazi.getYearZhi() + currentYun.liuNianGanZhi.substr(1)) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearZhiGanZhi) {
+      var gzs = shenShaYearZhiGanZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (
+          gz ==
+          bazi.getYearZhi() +
+            currentYun.liuNianGanZhi.substr(0, 1) +
+            currentYun.liuNianGanZhi.substr(1)
+        ) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearGanDayGanGanZhi) {
+      var gzs = shenShaYearGanDayGanGanZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (
+          gz ==
+            bazi.getYearGan() +
+              currentYun.liuNianGanZhi.substr(0, 1) +
+              currentYun.liuNianGanZhi.substr(1) ||
+          gz ==
+            bazi.getDayGan() +
+              currentYun.liuNianGanZhi.substr(0, 1) +
+              currentYun.liuNianGanZhi.substr(1)
+        ) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearZhidaYunliuNianZhi) {
+      var gzs = shenShaYearZhidaYunliuNianZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (gz == bazi.getYearZhi() + currentYun.liuNianGanZhi.substr(1)) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearZhiDayZhidaYunliuNianZhi) {
+      var gzs = shenShaYearZhiDayZhidaYunliuNianZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (
+          gz == bazi.getYearZhi() + currentYun.liuNianGanZhi.substr(1) ||
+          gz == bazi.getDayZhi() + currentYun.liuNianGanZhi.substr(1)
+        ) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearZhiZhiNN) {
+      var gzs = shenShaYearZhiZhiNN[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (gz == bazi.getYearZhi() + currentYun.liuNianGanZhi.substr(1)) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearNaYinDiZhi) {
+      var gzs = shenShaYearNaYinDiZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (gz == bazi.getYearNaYin() + currentYun.liuNianGanZhi.substr(1)) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearNaYinGanZhi) {
+      var gzs = shenShaYearNaYinGanZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (
+          gz ==
+          bazi.getYearNaYin() +
+            currentYun.liuNianGanZhi.substr(0, 1) +
+            currentYun.liuNianGanZhi.substr(1)
+        ) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaYearNaYinDayNaYin) {
+      var gzs = shenShaYearNaYinDayNaYin[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (
+          gz == bazi.getYearNaYin() + currentYun.liuNianNaYin ||
+          gz == bazi.getDayNaYin() + currentYun.liuNianNaYin
+        ) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  if (currentYun.liuNianGanZhi) {
+    shenShaTemp = {};
+    for (var i in shenShaDayZhiDiZhi) {
+      var gzs = shenShaDayZhiDiZhi[i];
+      for (var j = 0, k = gzs.length; j < k; j++) {
+        var gz = gzs[j];
+        if (gz == bazi.getDayZhi() + currentYun.liuNianGanZhi.substr(1)) {
+          shenShaTemp[i] = true;
+        }
+      }
+    }
+    for (var i in shenShaTemp) {
+      shenShaliuNian.push(i);
+    }
+  }
+
+  // 流年神煞结束
   //按字符长短排序
   const sortArray = (arr) => {
     arr.sort((a, b) => b.length - a.length);
@@ -2188,11 +2823,15 @@ const useShenSha = (lunar, gender, bazi) => {
   shenShaMonth = sortArray(shenShaMonth);
   shenShaDay = sortArray(shenShaDay);
   shenShaTime = sortArray(shenShaTime);
+  shenShadaYun = sortArray(shenShadaYun);
+  shenShaliuNian = sortArray(shenShaliuNian);
   return {
     shenShaYear,
     shenShaMonth,
     shenShaDay,
     shenShaTime,
+    shenShadaYun,
+    shenShaliuNian,
   };
 };
 

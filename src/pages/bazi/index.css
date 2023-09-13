@@ -21,18 +21,18 @@
   display: flex;
   justify-content: center;
 }
-.bazi .btn {
-  margin-top: 30rpx;
-}
-.bazi .date-pick-box {
-  display: none;
+.bazi .btn-box {
+  width: 90%;
+  margin: 30rpx auto;
 }
 .bazi .birthday {
-  background: linear-gradient(-90deg, #57b6ee, #57e2de, #57b6ee);
+  background: linear-gradient(-90deg, #8a6e17, #b69626);
   padding: 20rpx;
   text-align: center;
+  color: #fff;
 }
 .bazi .birthday .qian {
+  background: #fff;
   color: #8a6e17;
 }
 .bazi .base-zhu {
@@ -45,6 +45,18 @@
 }
 .bazi .base-zhu .base-zhu-text {
   padding: 0 30rpx;
+  text-align: center;
+}
+.bazi .pro-zhu {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 50rpx;
+  background: none;
+  align-items: center;
+}
+.bazi .pro-zhu .pro-zhu-text {
+  padding: 0 10rpx;
   text-align: center;
 }
 .bazi .base-zhuxing {
@@ -178,6 +190,19 @@
   text-align: center;
   color: #b69626;
 }
+.bazi .base-liuyi {
+  width: 100%;
+  padding-left: 30rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+.bazi .base-liuyi .base-liuyi-text-tit {
+  padding: 0 30rpx 0 0;
+}
+.bazi .base-liuyi .base-liuyi-text {
+  padding: 0 30rpx 10rpx 0;
+  text-align: center;
+}
 .bazi .bold {
   font-weight: bold;
 }
@@ -198,4 +223,5 @@
 }
 .taroify-tabs__line {
   width: var(--tabs-line-width, 100%);
+  background: #8a6e17;
 }

@@ -1,12 +1,24 @@
 import { Grid, Image } from "@taroify/core";
 import { View, Text } from "@tarojs/components";
+import Taro from "@tarojs/taro";
 
 const GridList = () => {
+  const toHuangli = () => {
+    Taro.navigateTo({
+      url: "/pages/huangli/index",
+    });
+  };
+  const toBazi = () => {
+    Taro.navigateTo({
+      url: "/pages/bazi/index",
+    });
+  };
+
   return (
     <View className="index-grid">
       <View style={{ margin: "27rpx" }}>热门测试</View>
       <Grid columns={3} bordered={false}>
-        <Grid.Item className="index-grid-item">
+        <Grid.Item className="index-grid-item" onClick={toHuangli}>
           <Image
             style={{ width: "3rem", height: "3rem" }}
             className="grid-image"
@@ -14,7 +26,7 @@ const GridList = () => {
           />
           <Text className="grid-text">今日黄历</Text>
         </Grid.Item>
-        <Grid.Item>
+        <Grid.Item onClick={toBazi}>
           <Image
             style={{ width: "3rem", height: "3rem" }}
             className="grid-image"

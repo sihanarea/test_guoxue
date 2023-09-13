@@ -1,4 +1,5 @@
 const useShenSha = (lunar, gender, bazi) => {
+  if (!lunar || !gender || !bazi) return;
   // 年柱神煞
   var shenShaYear = [];
   // 月柱神煞

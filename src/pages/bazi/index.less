@@ -20,17 +20,20 @@
     display: flex;
     justify-content: center;
   }
-  .btn {
-    margin-top: 30rpx;
+  .btn-box {
+    width: 90%;
+    margin: 30rpx auto;
   }
   .date-pick-box {
-    display: none;
+    // display: none;
   }
   .birthday {
-    background: linear-gradient(-90deg, #57b6ee, #57e2de, #57b6ee);
+    background: linear-gradient(-90deg, #8a6e17, #b69626);
     padding: 20rpx;
     text-align: center;
+    color: #fff;
     .qian {
+      background: #fff;
       color: #8a6e17;
     }
   }
@@ -43,6 +46,18 @@
     align-items: center;
     .base-zhu-text {
       padding: 0 30rpx;
+      text-align: center;
+    }
+  }
+  .pro-zhu {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: 50rpx;
+    background: none;
+    align-items: center;
+    .pro-zhu-text {
+      padding: 0 10rpx;
       text-align: center;
     }
   }
@@ -177,6 +192,19 @@
       color: #b69626;
     }
   }
+  .base-liuyi {
+    width: 100%;
+    padding-left: 30rpx;
+    display: flex;
+    flex-wrap: wrap;
+    .base-liuyi-text-tit {
+      padding: 0 30rpx 0 0;
+    }
+    .base-liuyi-text {
+      padding: 0 30rpx 10rpx 0;
+      text-align: center;
+    }
+  }
   .bold {
     font-weight: bold;
   }
@@ -198,4 +226,5 @@
 }
 .taroify-tabs__line {
   width: var(--tabs-line-width, 100%);
+  background: #8a6e17;
 }

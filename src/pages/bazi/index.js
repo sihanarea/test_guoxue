@@ -1,12 +1,15 @@
 import { View, Text } from "@tarojs/components";
 import { useState } from "react";
-import { Radio, Button, Tabs, Image, Tag, Toast } from "@taroify/core";
+import { Radio, Button, Tabs, Image, Tag, Toast, Flex } from "@taroify/core";
 import { ArrowDown } from "@taroify/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { Lunar, LunarUtil, EightChar, Solar } from "./components/lunar";
 import GetCangGan from "./components/GetCangGan";
 import useShenSha from "./Hooks/useShenSha";
 import useXingChongHehai from "./Hooks/useXingChongHeHai";
+import Liuyue from "./components/Liuyue";
+import Liunian from "./components/Liunian";
+import Dayun from "./components/Dayun";
 // import { Lunar, LunarUtil, EightChar } from "lunar-javascript";
 
 import {
@@ -34,6 +37,8 @@ const Index = () => {
   const [daYun, setDaYun] = useState("");
   const [daYunSize, setDaYunSize] = useState("");
   const [currentYun, setCurrentYun] = useState("");
+  const [dayunIndex, setDayunIndex] = useState(1);
+  const [liunianIndex, setLiunianIndex] = useState(1);
 
   const dispatch = useDispatch();
 
@@ -133,6 +138,13 @@ const Index = () => {
       index += 12;
     }
     return EightChar.CHANG_SHENG[index];
+  };
+
+  const dayunChange = (index) => {
+    setDayunIndex(index);
+  };
+  const liunianChange = (index) => {
+    setLiunianIndex(index);
   };
   const getGanIndex = (gan) => {
     for (var i = 0, j = LunarUtil.GAN.length; i < j; i++) {
@@ -315,6 +327,17 @@ const Index = () => {
         d.getStartYear() <= currentYearObj &&
         currentYearObj <= d.getEndYear()
       ) {
+        dayunChange(i); //获取大运位置
+        var liunian = d.getLiuNian();
+
+        for (var lnIndex = 0; lnIndex < liunian.length; lnIndex++) {
+          var liunianObj = liunian[lnIndex];
+          if (liunianObj.getYear() == currentYearObj) {
+            liunianChange(liunianObj.getIndex());
+          }
+        }
+
+        // liunianChange
         var gz = d.getGanZhi();
         if (gz) {
           var g = gz.substr(0, 1);
@@ -359,6 +382,7 @@ const Index = () => {
     setDaYun(daYunObj);
     setDaYunSize(daYunSizeObj);
     setCurrentYun(currentYunObj);
+    console.log("daYunObj", daYunObj);
     console.log("currentYunObj", currentYunObj);
   };
 
@@ -1361,6 +1385,50 @@ const Index = () => {
                           ))}
                       </View>
                     </View>
+                    <View className="pro-yun">
+                      <Flex className="pro-yun-qiyun" justify="space-between">
+                        <View>
+                          起运：{startYunSolar.getYear()}年
+                          {startYunSolar.getMonth()}月{startYunSolar.getDay()}日
+                        </View>
+                        <View>
+                          <Text>
+                            {new Date().getFullYear() - lunar.getYear() + 1}岁
+                            {daYunSize}
+                          </Text>
+                          <Tag children="今" className="jin" />
+                        </View>
+                      </Flex>
+
+                      <Dayun
+                        dayunChange={dayunChange}
+                        daYun={daYun}
+                        dayunIndex={dayunIndex}
+                        colorHandle={colorHandle}
+                        LunarUtil={LunarUtil}
+                        currentBazi={currentBazi}
+                      />
+                      <Liunian
+                        liunianChange={liunianChange}
+                        daYun={daYun}
+                        dayunIndex={dayunIndex}
+                        colorHandle={colorHandle}
+                        LunarUtil={LunarUtil}
+                        currentBazi={currentBazi}
+                        liunianIndex={liunianIndex}
+                      />
+                      <Liuyue
+                        lunar={lunar}
+                        daYun={daYun}
+                        dayunIndex={dayunIndex}
+                        currentYear={currentYear}
+                        colorHandle={colorHandle}
+                        LunarUtil={LunarUtil}
+                        currentBazi={currentBazi}
+                        liunianIndex={liunianIndex}
+                      />
+                    </View>
+
                     <View className="base-liuyi">
                       <View className="base-liuyi-text-tit">天干留意：</View>
                       {tianganliuyi.length > 1

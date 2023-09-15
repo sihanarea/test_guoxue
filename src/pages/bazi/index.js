@@ -10,22 +10,16 @@ import useXingChongHehai from "./Hooks/useXingChongHeHai";
 import Liuyue from "./components/Liuyue";
 import Liunian from "./components/Liunian";
 import Dayun from "./components/Dayun";
-// import { Lunar, LunarUtil, EightChar } from "lunar-javascript";
+import Birthday from "./components/Birthday";
 
-import {
-  open,
-  // close,
-  // openHunagLi,
-  // closeHunagLi,
-  // getHuangLiDate,
-} from "../../actions/huangli";
+import { open } from "../../actions/huangli";
 import DatePick from "./components/DatePick";
 import "./index.less";
 
 const Index = () => {
   const huangli = useSelector((state) => state.huangli);
-  const [sexValue, setSexValue] = useState(1);
-  const [liValue, setLiValue] = useState("1");
+  const [sexValue, setSexValue] = useState("");
+  const [liValue, setLiValue] = useState();
   const [showPan, setShowPan] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastValue, setToastValue] = useState("");
@@ -35,7 +29,7 @@ const Index = () => {
   const [currentYear, setCurrentYear] = useState("");
   const [startYunSolar, setStartYunSolar] = useState("");
   const [daYun, setDaYun] = useState("");
-  const [daYunSize, setDaYunSize] = useState("");
+  // const [daYunSize, setDaYunSize] = useState("");
   const [currentYun, setCurrentYun] = useState("");
   const [dayunIndex, setDayunIndex] = useState(1);
   const [liunianIndex, setLiunianIndex] = useState(1);
@@ -45,7 +39,6 @@ const Index = () => {
   const openFn = () => {
     dispatch(open());
   };
-  console.log("时辰", huangli.getBaziDate);
 
   const initBazi = () => {
     //阳历1，阴历0
@@ -66,18 +59,15 @@ const Index = () => {
       day = Number(huangli.getBaziDate.split("-")[2].split(" ")[0]);
       console.log("选择了阴历", year, month, day);
     }
-
-    const lunarObj = Lunar.fromYmdHms(1991, 4, 17, 16, 30, sexValue);
+    console.log("sexValue", sexValue);
+    const lunarObj = Lunar.fromYmdHms(year, month, day, hour, 30, sexValue);
     const solarObj = lunarObj.getSolar();
     const currBaziObj = lunarObj.getEightChar();
-    currBaziObj.setSect(1);
+    currBaziObj.setSect(2);
     computeEightChar(lunarObj);
     setLunar(lunarObj); //1男，0女
     setSolar(solarObj);
     setCurrentBazi(currBaziObj);
-    console.log("时干", lunarObj.getTimeGan());
-    console.log("时干位置", lunarObj?.getTimeGanIndex());
-    console.log("时支位置", lunarObj?.getTimeZhiIndex());
   };
 
   const {
@@ -97,8 +87,6 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     currentBazi && currentYun && useXingChongHehai(currentBazi, currentYun);
 
-  console.log("lunar", lunar);
-
   //确定排盘
   const confirmPan = () => {
     if (!sexValue) {
@@ -110,10 +98,16 @@ const Index = () => {
         setToastOpen(true);
       }
     }
-
-    if (sexValue && liValue) {
-      setShowPan(true);
-      initBazi();
+    var year =
+      new Date().getFullYear() - Number(huangli.getBaziDate.split("-")[0]);
+    if (year > 12) {
+      if (sexValue && liValue) {
+        setShowPan(true);
+        initBazi();
+      }
+    } else {
+      setToastValue("不要给小朋友算命啦");
+      setToastOpen(true);
     }
   };
   var CHANG_SHENG_OFFSET = {
@@ -163,12 +157,16 @@ const Index = () => {
     return 0;
   };
 
+  const currentToday = () => {
+    computeEightChar(lunar);
+  };
+
   const computeEightChar = (lunarObj) => {
     var currentYearObj, startYunSolarObj, daYunObj, daYunSizeObj, currentYunObj;
     var bazi = lunarObj.getEightChar();
     var date = new Date();
     currentYearObj = date.getFullYear();
-    var yun = bazi.getYun(sexValue);
+    var yun = bazi.getYun(Number(sexValue), 2);
     startYunSolarObj = yun.getStartSolar();
     daYunObj = yun.getDaYun();
     daYunSizeObj = daYunObj.length;
@@ -220,18 +218,6 @@ const Index = () => {
 
     var currentYunObj = {
       daYunWuXing: "",
-      liuNianWuXing:
-        LunarUtil.WU_XING_GAN[currentLunar.getYearGanByLiChun()] +
-        LunarUtil.WU_XING_ZHI[currentLunar.getYearZhiByLiChun()],
-      liuYueWuXing:
-        LunarUtil.WU_XING_GAN[currentLunar.getMonthGan()] +
-        LunarUtil.WU_XING_ZHI[currentLunar.getMonthZhi()],
-      liuRiWuXing:
-        LunarUtil.WU_XING_GAN[currentLunar.getDayGan()] +
-        LunarUtil.WU_XING_ZHI[currentLunar.getDayZhi()],
-      liuShiWuXing:
-        LunarUtil.WU_XING_GAN[currentLunar.getTimeGan()] +
-        LunarUtil.WU_XING_ZHI[currentLunar.getTimeZhi()],
 
       daYunDiShi: "",
       liuNianDiShi: getChangSheng(
@@ -243,16 +229,6 @@ const Index = () => {
         bazi.getDayGan(),
         bazi.getDayGanIndex(),
         currentLunar.getMonthZhiIndex()
-      ),
-      liuRiDiShi: getChangSheng(
-        bazi.getDayGan(),
-        bazi.getDayGanIndex(),
-        currentLunar.getDayZhiIndex()
-      ),
-      liuShiDiShi: getChangSheng(
-        bazi.getDayGan(),
-        bazi.getDayGanIndex(),
-        currentLunar.getTimeZhiIndex()
       ),
 
       daYunChangSheng: "",
@@ -266,30 +242,16 @@ const Index = () => {
         currentLunar.getMonthGanIndex(),
         currentLunar.getMonthZhiIndex()
       ),
-      liuRiChangSheng: getChangSheng(
-        currentLunar.getDayGan(),
-        currentLunar.getDayGanIndex(),
-        currentLunar.getDayZhiIndex()
-      ),
-      liuShiChangSheng: getChangSheng(
-        currentLunar.getTimeGan(),
-        currentLunar.getTimeGanIndex(),
-        currentLunar.getTimeZhiIndex()
-      ),
 
       daYunXunKong: "",
       liuNianXunKong: LunarUtil.getXunKong(
         currentLunar.getYearInGanZhiByLiChun()
       ),
       liuYueXunKong: LunarUtil.getXunKong(currentLunar.getMonthInGanZhi()),
-      liuRiXunKong: LunarUtil.getXunKong(currentLunar.getDayInGanZhi()),
-      liuShiXunKong: LunarUtil.getXunKong(currentLunar.getTimeInGanZhi()),
 
       daYunNaYin: "",
       liuNianNaYin: LunarUtil.NAYIN[currentLunar.getYearInGanZhiByLiChun()],
       liuYueNaYin: LunarUtil.NAYIN[currentLunar.getMonthInGanZhi()],
-      liuRiNaYin: LunarUtil.NAYIN[currentLunar.getDayInGanZhi()],
-      liuShiNaYin: LunarUtil.NAYIN[currentLunar.getTimeInGanZhi()],
 
       daYunShiShen: "",
       daYunShiShenZhi: [],
@@ -303,23 +265,7 @@ const Index = () => {
       liuYueShiShen:
         LunarUtil.SHI_SHEN_GAN[bazi.getDayGan() + currentLunar.getMonthGan()],
       liuYueShiShenZhi: mShiShenZhi,
-      liuRiGanZhi: currentLunar.getDayInGanZhi(),
-      liuRiShiShen:
-        LunarUtil.SHI_SHEN_GAN[bazi.getDayGan() + currentLunar.getDayGan()],
-      liuRiShiShenZhi: rShiShenZhi,
-      liuShiGanZhi: currentLunar.getTimeInGanZhi(),
-      liuShiShiShen:
-        LunarUtil.SHI_SHEN_GAN[bazi.getDayGan() + currentLunar.getTimeGan()],
-      liuShiShiShenZhi: sShiShenZhi,
     };
-    currentYunObj.liuNianGan = currentYunObj.liuNianGanZhi.substr(0, 1);
-    currentYunObj.liuNianZhi = currentYunObj.liuNianGanZhi.substr(1);
-    currentYunObj.liuYueGan = currentYunObj.liuYueGanZhi.substr(0, 1);
-    currentYunObj.liuYueZhi = currentYunObj.liuYueGanZhi.substr(1);
-    currentYunObj.liuRiGan = currentYunObj.liuRiGanZhi.substr(0, 1);
-    currentYunObj.liuRiZhi = currentYunObj.liuRiGanZhi.substr(1);
-    currentYunObj.liuShiGan = currentYunObj.liuShiGanZhi.substr(0, 1);
-    currentYunObj.liuShiZhi = currentYunObj.liuShiGanZhi.substr(1);
 
     for (var i = 0; i < daYunSizeObj; i++) {
       var d = daYunObj[i];
@@ -343,8 +289,6 @@ const Index = () => {
           var g = gz.substr(0, 1);
           var z = gz.substr(1);
           var zIndex = getZhiIndex(z);
-          currentYunObj.daYunWuXing =
-            LunarUtil.WU_XING_GAN[g] + LunarUtil.WU_XING_ZHI[z];
           currentYunObj.daYunDiShi = getChangSheng(
             bazi.getDayGan(),
             bazi.getDayGanIndex(),
@@ -358,8 +302,6 @@ const Index = () => {
           currentYunObj.daYunXunKong = LunarUtil.getXunKong(gz);
           currentYunObj.daYunNaYin = LunarUtil.NAYIN[gz];
 
-          currentYunObj.daYunGan = g;
-          currentYunObj.daYunZhi = z;
           currentYunObj.daYunGanZhi = gz;
           currentYunObj.daYunShiShen =
             LunarUtil.SHI_SHEN_GAN[bazi.getDayGan() + g];
@@ -380,7 +322,7 @@ const Index = () => {
     setCurrentYear(currentYearObj);
     setStartYunSolar(startYunSolarObj);
     setDaYun(daYunObj);
-    setDaYunSize(daYunSizeObj);
+    // setDaYunSize(daYunSizeObj);
     setCurrentYun(currentYunObj);
     console.log("daYunObj", daYunObj);
     console.log("currentYunObj", currentYunObj);
@@ -462,8 +404,12 @@ const Index = () => {
               className="sex"
               direction="horizontal"
             >
-              <Radio name="1">男</Radio>
-              <Radio name="0">女</Radio>
+              <Radio name="1" className="radio">
+                男
+              </Radio>
+              <Radio name="0" className="radio">
+                女
+              </Radio>
             </Radio.Group>
           </View>
           <View className="sex-box">
@@ -475,8 +421,12 @@ const Index = () => {
               className="sex"
               direction="horizontal"
             >
-              <Radio name="1">阳历</Radio>
-              <Radio name="0">阴历</Radio>
+              <Radio name="1" className="radio">
+                阳历
+              </Radio>
+              <Radio name="0" className="radio">
+                阴历
+              </Radio>
             </Radio.Group>
           </View>
           <View className="btn-box">
@@ -499,21 +449,7 @@ const Index = () => {
               <Tabs animated swipeable>
                 <Tabs.TabPane title="基本命盘">
                   <View className="base">
-                    <View className="birthday">
-                      <View className="birthday-item">
-                        阳历:{solar.toYmdHms()}
-                      </View>
-                      <View className="birthday-item">
-                        阴历:{lunar.getYearInChinese()}年
-                        {lunar.getMonthInChinese()}月{lunar.getDayInChinese()}{" "}
-                        {lunar.getTimeZhi()}时{" "}
-                        <Tag
-                          color="primary"
-                          children={`${sexValue === 1 ? "乾" : "坤"}造`}
-                          className="qian"
-                        />
-                      </View>
-                    </View>
+                    <Birthday solar={solar} lunar={lunar} sexValue={sexValue} />
                     <View className="base-zhu">
                       <Text className="base-zhu-text">日期</Text>
                       <Text className="base-zhu-text">年柱</Text>
@@ -844,7 +780,10 @@ const Index = () => {
                       </View>
                     </View>
                     <View className="base-liuyi">
-                      <View className="base-liuyi-text-tit">天干留意：</View>
+                      <Tag
+                        className="base-liuyi-text-tit"
+                        children="天干留意"
+                      />
                       {tianganliuyi.length > 1
                         ? tianganliuyi.map((item, index) => (
                             <Text key={index} className="base-liuyi-text">
@@ -854,7 +793,10 @@ const Index = () => {
                         : "无"}
                     </View>
                     <View className="base-liuyi">
-                      <View className="base-liuyi-text-tit">地支留意：</View>
+                      <Tag
+                        className="base-liuyi-text-tit"
+                        children="地支留意"
+                      />
                       {dizhiliuyi.length > 1
                         ? dizhiliuyi.map((item, index) => (
                             <Text key={index} className="base-liuyi-text">
@@ -867,6 +809,7 @@ const Index = () => {
                 </Tabs.TabPane>
                 <Tabs.TabPane title="专业细盘">
                   <View className="pro">
+                    <Birthday solar={solar} lunar={lunar} sexValue={sexValue} />
                     <View className="pro-zhu">
                       <Text className="pro-zhu-text">日期</Text>
                       <Text className="pro-zhu-text">流年</Text>
@@ -879,10 +822,11 @@ const Index = () => {
                     <View className="pro-zhuxing">
                       <Text className="pro-zhuxing-text">主星</Text>
                       <Text className="pro-zhuxing-text bold">
-                        {currentYun.daYunShiShen}
+                        {currentYun.liuNianShiShen}
                       </Text>
                       <Text className="pro-zhuxing-text bold">
-                        {currentYun.liuNianShiShen}
+                        {" "}
+                        {currentYun.daYunShiShen}
                       </Text>
                       <Text className="pro-zhuxing-text bold">
                         {currentBazi.getYearShiShenGan()}
@@ -891,7 +835,7 @@ const Index = () => {
                         {currentBazi.getMonthShiShenGan()}
                       </Text>
                       <Text className="pro-zhuxing-text bold">
-                        元{sexValue === 1 ? "男" : "女"}
+                        元{sexValue == 1 ? "男" : "女"}
                       </Text>
                       <Text className="pro-zhuxing-text bold">
                         {currentBazi.getTimeShiShenGan()}
@@ -1394,9 +1338,12 @@ const Index = () => {
                         <View>
                           <Text>
                             {new Date().getFullYear() - lunar.getYear() + 1}岁
-                            {daYunSize}
                           </Text>
-                          <Tag children="今" className="jin" />
+                          <Tag
+                            children="今"
+                            className="jin"
+                            onClick={currentToday}
+                          />
                         </View>
                       </Flex>
 
@@ -1407,6 +1354,8 @@ const Index = () => {
                         colorHandle={colorHandle}
                         LunarUtil={LunarUtil}
                         currentBazi={currentBazi}
+                        currentYun={currentYun}
+                        setCurrentYun={setCurrentYun}
                       />
                       <Liunian
                         liunianChange={liunianChange}
@@ -1416,6 +1365,8 @@ const Index = () => {
                         LunarUtil={LunarUtil}
                         currentBazi={currentBazi}
                         liunianIndex={liunianIndex}
+                        currentYun={currentYun}
+                        setCurrentYun={setCurrentYun}
                       />
                       <Liuyue
                         lunar={lunar}
@@ -1430,7 +1381,10 @@ const Index = () => {
                     </View>
 
                     <View className="base-liuyi">
-                      <View className="base-liuyi-text-tit">天干留意：</View>
+                      <Tag
+                        className="base-liuyi-text-tit"
+                        children="天干留意"
+                      />
                       {tianganliuyi.length > 1
                         ? tianganliuyi.map((item, index) => (
                             <Text key={index} className="base-liuyi-text">
@@ -1440,7 +1394,10 @@ const Index = () => {
                         : "无"}
                     </View>
                     <View className="base-liuyi">
-                      <View className="base-liuyi-text-tit">地支留意：</View>
+                      <Tag
+                        className="base-liuyi-text-tit"
+                        children="地支留意"
+                      />
                       {dizhiliuyi.length > 1
                         ? dizhiliuyi.map((item, index) => (
                             <Text key={index} className="base-liuyi-text">

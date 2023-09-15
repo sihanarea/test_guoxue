@@ -49,7 +49,7 @@ class Index extends Component {
         {/* <View>{this.props.counter.num}</View>
          <View onCLick={this.props.add}>增加</View> */}
         <View className="index-list">
-           <GridList />
+           {/* <GridList /> */}
         </View>
        
       </View>

@@ -83,7 +83,9 @@ const CalendarBanner = () => {
       </View>
       {/* <View className="calendar-xingzuo">
         <Image
-          src={require("http://s-gz-7463-sihanarea.oss.dogecdn.com/guoxue/%E5%8F%8C%E5%AD%90.png")}
+          src={require(`../../../assets/images/xingzuo/${
+            calendarData.xingZuo || "白羊"
+          }.png`)}
           style={{ width: "100%", height: "100%" }}
         />
         <View className="calendar-xingzuo-text">

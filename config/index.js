@@ -21,7 +21,15 @@ const config = {
     enable: true, // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
   },
   performance: {
+    hints: false,
     maxAssetSize: 1000000,
+    maxEntrypointSize: 1000000,
+  },
+  optimization: {
+    splitChunks: {
+      minSize: 10000,
+      maxSize: 250000,
+    },
   },
   mini: {
     postcss: {

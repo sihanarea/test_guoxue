@@ -23,6 +23,10 @@
   .btn-box {
     width: 90%;
     margin: 30rpx auto;
+    .btn {
+      background: #8a6e17;
+      border: none;
+    }
   }
   .date-pick-box {
     // display: none;
@@ -330,7 +334,7 @@
       text-align: center;
     }
     .pro-shensha-text {
-      padding: 0 30rpx 0 10rpx;
+      padding: 0 20rpx 0 20rpx;
       font-size: 18rpx;
       text-align: center;
       color: #b69626;
@@ -341,12 +345,19 @@
     padding-left: 30rpx;
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 20rpx;
     .base-liuyi-text-tit {
-      padding: 0 30rpx 0 0;
+      padding: 0;
+      margin-right: 30rpx;
+      background: #8a6e17;
+      padding: 10px;
+      font-weight: bold;
     }
     .base-liuyi-text {
       padding: 0 30rpx 10rpx 0;
       text-align: center;
+      font-size: 24rpx;
+      line-height: 60rpx;
     }
   }
   .pro-yun {
@@ -364,12 +375,14 @@
       padding: 10rpx 0;
 
       .pro-yun-dayun-tit {
-        width: 60rpx;
         text-align: center;
         font-size: 36rpx;
         font-weight: bold;
         padding: 10rpx;
+        width: 60rpx;
         height: 230rpx;
+        display: flex;
+        align-items: center;
         border-right: 1px solid #ccc;
       }
       .pro-yun-dayun-content {
@@ -406,13 +419,15 @@
       padding: 10rpx 0;
 
       .pro-yun-liunian-tit {
-        width: 60rpx;
         text-align: center;
-        font-size: 32rpx;
+        font-size: 36rpx;
         font-weight: bold;
         padding: 10rpx;
-        height: 180rpx;
+        max-width: 45px;
+        height: 170rpx;
         border-right: 1px solid #ccc;
+        display: flex;
+        align-items: center;
       }
       .pro-yun-liunian-content {
         display: flex;
@@ -425,7 +440,7 @@
         .pro-yun-liunian-item {
           border-right: 1px solid #ccc;
           text-align: center;
-          height: 180rpx;
+          height: 170rpx;
           padding: 10rpx;
           font-size: 28rpx;
           font-weight: bold;
@@ -463,4 +478,15 @@
 .taroify-tabs__line {
   width: var(--tabs-line-width, 100%);
   background: #8a6e17;
+}
+.taroify-radio__icon--checked .taroify-icon {
+  background: #8a6e17;
+  border: none;
+}
+.taroify-picker__confirm {
+  color: #8a6e17;
+}
+
+.taroify-radio__icon .taroify-icon {
+  border: 2rpx solid var(--radio-border-color, var(--gray-5, #c8c9cc));
 }

@@ -131,22 +131,18 @@ const useXingChongHehai = (bazi, currentYun) => {
   zhis[bazi.getTimeZhi()] = zhis[bazi.getTimeZhi()]
     ? zhis[bazi.getTimeZhi()] + 1
     : 1;
-
   if (currentYun) {
-    if (currentYun.daYunZhi) {
-      zhis[currentYun.daYunZhi] = zhis[currentYun.daYunZhi]
-        ? zhis[currentYun.daYunZhi] + 1
-        : 1;
+    const daYunZhi = currentYun.daYunGanZhi.substr(1);
+    const liuNianZhi = currentYun.liuNianGanZhi.substr(1);
+    const liuYuenZhi = currentYun.liuYueGanZhi.substr(1);
+    if (daYunZhi) {
+      zhis[daYunZhi] = zhis[daYunZhi] ? zhis[daYunZhi] + 1 : 1;
     }
-    if (currentYun.liuNianZhi) {
-      zhis[currentYun.liuNianZhi] = zhis[currentYun.liuNianZhi]
-        ? zhis[currentYun.liuNianZhi] + 1
-        : 1;
+    if (liuNianZhi) {
+      zhis[liuNianZhi] = zhis[liuNianZhi] ? zhis[liuNianZhi] + 1 : 1;
     }
-    if (currentYun.liuYueZhi) {
-      zhis[currentYun.liuYueZhi] = zhis[currentYun.liuYueZhi]
-        ? zhis[currentYun.liuYueZhi] + 1
-        : 1;
+    if (liuYuenZhi) {
+      zhis[liuYuenZhi] = zhis[liuYuenZhi] ? zhis[liuYuenZhi] + 1 : 1;
     }
   }
 

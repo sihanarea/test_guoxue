@@ -347,6 +347,9 @@
   padding: 10px;
   font-weight: bold;
 }
+.bazi .base-liuyi .base-liuyi-view {
+  margin-right: 20rpx;
+}
 .bazi .base-liuyi .base-liuyi-text {
   padding: 0 30rpx 10rpx 0;
   text-align: center;

@@ -328,6 +328,33 @@ const Index = () => {
     console.log("currentYunObj", currentYunObj);
   };
 
+  const color2Handle = (wuxing) => {
+    let colors = "";
+    console.log("原生", wuxing);
+    let strWuxing = String(wuxing);
+    console.log("string转换后", strWuxing);
+    console.log("string typeof后", typeof strWuxing);
+    console.log("gi==", strWuxing.includes("gi"));
+    console.log("金", strWuxing.includes("金"));
+    console.log("木", strWuxing.includes("木"));
+    console.log("水", strWuxing.includes("水"));
+    console.log("火", strWuxing.includes("火"));
+    console.log("土", strWuxing.includes("土"));
+    if (strWuxing.includes("金")) {
+      colors = "#e89126";
+    } else if (strWuxing.includes("木")) {
+      colors = "#30d04f";
+    } else if (strWuxing.includes("水")) {
+      colors = "#3287ef";
+    } else if (strWuxing.includes("火")) {
+      colors = "#d40719";
+    } else if (strWuxing.includes("土")) {
+      colors = "#8a6e17";
+    }
+    console.log("colors", colors);
+
+    return colors;
+  };
   const colorHandle = (tiangandizhi) => {
     const tiangandizhiArr = {
       mu: ["甲", "乙", "寅", "卯"],
@@ -353,6 +380,22 @@ const Index = () => {
       colors = "tu";
     }
     return colors;
+  };
+
+  const HighlightText = (text) => {
+    const targetArray = ["金", "木", "水", "火", "土"];
+    for (let i = 0; i < targetArray.length; i++) {
+      // 使用正则表达式进行全局匹配，忽略大小写
+      let pattern = new RegExp(targetArray[i], "gi");
+
+      // 替换匹配到的文本，并添加颜色
+      text = text.replace(
+        pattern,
+        `<Text style="fontWeight:bold;color:${color2Handle(pattern)}">$&</Text>`
+      );
+    }
+
+    return <View dangerouslySetInnerHTML={{ __html: text }}></View>;
   };
   const ImgHandle = (tiangandizhi) => {
     const tiangandizhiArr = {
@@ -445,6 +488,7 @@ const Index = () => {
       ) : (
         <>
           {lunar !== "" && currentBazi !== "" && (
+            // <Snapshot>
             <View className="pan">
               <Tabs animated swipeable>
                 <Tabs.TabPane title="基本命盘">
@@ -786,9 +830,9 @@ const Index = () => {
                       />
                       {tianganliuyi.length > 1
                         ? tianganliuyi.map((item, index) => (
-                            <Text key={index} className="base-liuyi-text">
-                              {item}
-                            </Text>
+                            <View key={index} className="base-liuyi-view">
+                              {HighlightText(item)}
+                            </View>
                           ))
                         : "无"}
                     </View>
@@ -799,9 +843,9 @@ const Index = () => {
                       />
                       {dizhiliuyi.length > 1
                         ? dizhiliuyi.map((item, index) => (
-                            <Text key={index} className="base-liuyi-text">
-                              {item}
-                            </Text>
+                            <View key={index} className="base-liuyi-text">
+                              {HighlightText(item)}
+                            </View>
                           ))
                         : "无"}
                     </View>
@@ -1387,9 +1431,9 @@ const Index = () => {
                       />
                       {tianganliuyi.length > 1
                         ? tianganliuyi.map((item, index) => (
-                            <Text key={index} className="base-liuyi-text">
-                              {item}
-                            </Text>
+                            <View key={index} className="base-liuyi-view">
+                              {HighlightText(item)}
+                            </View>
                           ))
                         : "无"}
                     </View>
@@ -1400,9 +1444,9 @@ const Index = () => {
                       />
                       {dizhiliuyi.length > 1
                         ? dizhiliuyi.map((item, index) => (
-                            <Text key={index} className="base-liuyi-text">
-                              {item}
-                            </Text>
+                            <View key={index} className="base-liuyi-view">
+                              {HighlightText(item)}
+                            </View>
                           ))
                         : "无"}
                     </View>

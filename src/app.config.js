@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-undef
 export default defineAppConfig({
-  pages: ["pages/index/index", "pages/bazi/index", "pages/huangli/index"],
+  pages: ["pages/index/index"],
   window: {
     backgroundTextStyle: "light",
     navigationBarBackgroundColor: "#fff",
@@ -8,4 +8,16 @@ export default defineAppConfig({
     navigationBarTextStyle: "black",
   },
   lazyCodeLoading: "requiredComponents",
+  subPackages: [
+    {
+      root: "pages/bazi/",
+      name: "bazi",
+      pages: ["index"],
+    },
+    {
+      root: "pages/huangli/",
+      name: "huangli",
+      pages: ["index"],
+    },
+  ],
 });

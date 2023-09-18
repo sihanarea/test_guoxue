@@ -1,5 +1,5 @@
 import { View, Text } from "@tarojs/components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Radio, Button, Tabs, Image, Tag, Toast, Flex } from "@taroify/core";
 import { ArrowDown } from "@taroify/icons";
 import { useSelector, useDispatch } from "react-redux";
@@ -52,14 +52,11 @@ const Index = () => {
       year = Number(so.getLunar().getYear());
       month = Number(so.getLunar().getMonth());
       day = Number(so.getLunar().getDay());
-      console.log("选择了阳历", liValue);
     } else {
       year = Number(huangli.getBaziDate.split("-")[0]);
       month = Number(huangli.getBaziDate.split("-")[1]);
       day = Number(huangli.getBaziDate.split("-")[2].split(" ")[0]);
-      console.log("选择了阴历", year, month, day);
     }
-    console.log("sexValue", sexValue);
     const lunarObj = Lunar.fromYmdHms(year, month, day, hour, 30, sexValue);
     const solarObj = lunarObj.getSolar();
     const currBaziObj = lunarObj.getEightChar();
@@ -324,22 +321,11 @@ const Index = () => {
     setDaYun(daYunObj);
     // setDaYunSize(daYunSizeObj);
     setCurrentYun(currentYunObj);
-    console.log("daYunObj", daYunObj);
-    console.log("currentYunObj", currentYunObj);
   };
 
   const color2Handle = (wuxing) => {
     let colors = "";
-    console.log("原生", wuxing);
     let strWuxing = String(wuxing);
-    console.log("string转换后", strWuxing);
-    console.log("string typeof后", typeof strWuxing);
-    console.log("gi==", strWuxing.includes("gi"));
-    console.log("金", strWuxing.includes("金"));
-    console.log("木", strWuxing.includes("木"));
-    console.log("水", strWuxing.includes("水"));
-    console.log("火", strWuxing.includes("火"));
-    console.log("土", strWuxing.includes("土"));
     if (strWuxing.includes("金")) {
       colors = "#e89126";
     } else if (strWuxing.includes("木")) {
@@ -351,7 +337,6 @@ const Index = () => {
     } else if (strWuxing.includes("土")) {
       colors = "#8a6e17";
     }
-    console.log("colors", colors);
 
     return colors;
   };
@@ -423,6 +408,23 @@ const Index = () => {
     }
     return imgs;
   };
+  const onShareAppMessage = () => {
+    return {
+      title: "八字排盘",
+      path: "/pages/bazi",
+    };
+  };
+  const onShareTimeline = () => {
+    return {
+      title: "八字排盘",
+      path: "/pages/bazi",
+    };
+  };
+  useEffect(() => {
+    onShareAppMessage();
+    onShareTimeline();
+  }, []);
+
   return (
     <View className="bazi">
       {!showPan ? (

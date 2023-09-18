@@ -7,6 +7,8 @@ export default defineAppConfig({
     navigationBarTitleText: "WeChat",
     navigationBarTextStyle: "black",
   },
+  enableShareAppMessage: true,
+  enableShareTimeline: true,
   lazyCodeLoading: "requiredComponents",
   subPackages: [
     {

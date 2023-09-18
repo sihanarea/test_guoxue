@@ -56,6 +56,19 @@ class Index extends Component {
     this.props.getHuangLiDate(today)
   }
 
+  onShareAppMessage(){
+     return {
+      title: "老黄历",
+      path: "/pages/huangli",
+    }
+  }
+  onShareTimeline(){
+    return {
+      title: "老黄历",
+      path: "/pages/huangli",
+    }
+  }
+
   render() {
 
     return (

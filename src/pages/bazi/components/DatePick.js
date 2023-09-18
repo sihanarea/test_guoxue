@@ -18,7 +18,6 @@ const DatePick = () => {
     dispatch(close());
   };
   const confirmFn = () => {
-    console.log("===", value);
     const selectDate = dayjs(value).format("YYYY-MM-DD HH");
     dispatch(getBaziDate(selectDate));
     dispatch(close());

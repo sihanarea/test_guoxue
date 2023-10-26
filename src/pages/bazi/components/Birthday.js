@@ -11,6 +11,7 @@ const Birthday = (props) => {
         {lunar.getDayInChinese()} {lunar.getTimeZhi()}时{" "}
         <Tag
           color="primary"
+          // eslint-disable-next-line react/no-children-prop
           children={`${sexValue == 1 ? "乾" : "坤"}造`}
           className="qian"
         />

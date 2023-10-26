@@ -7,9 +7,9 @@ import { close, getBaziDate } from "../../../actions/huangli";
 const DatePick = () => {
   //这个是排盘的。年月日时
   const [minDate] = useState(new Date(1930, 0, 1, 0));
-  const [maxDate] = useState(new Date(2010, 0, 1, 0));
-  const [defaultValue] = useState(new Date());
-  const [value, setValue] = useState(new Date());
+  const [maxDate] = useState(new Date(2009, 0, 1, 0));
+  const [defaultValue] = useState(new Date(2009, 0, 1, 0));
+  const [value, setValue] = useState(new Date(2009, 0, 1, 0));
   const huangli = useSelector((state) => state.huangli);
   const dispatch = useDispatch();
   // console.log("test", huangli);

@@ -1,6 +1,17 @@
-import { View, Text } from "@tarojs/components";
+import { View, Text, Input } from "@tarojs/components";
+import Taro from "@tarojs/taro";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Radio, Button, Tabs, Image, Tag, Toast, Flex } from "@taroify/core";
+import {
+  Radio,
+  Button,
+  Tabs,
+  Image,
+  Tag,
+  Toast,
+  Flex,
+  Cell,
+} from "@taroify/core";
 import { ArrowDown } from "@taroify/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { Lunar, LunarUtil, EightChar, Solar } from "./components/lunar";
@@ -12,8 +23,9 @@ import Liunian from "./components/Liunian";
 import Dayun from "./components/Dayun";
 import Birthday from "./components/Birthday";
 
-import { open } from "../../actions/huangli";
+import { open, openArea } from "../../actions/huangli";
 import DatePick from "./components/DatePick";
+import AreaPick from "./components/AreaPick";
 import "./index.less";
 
 const Index = () => {
@@ -23,8 +35,10 @@ const Index = () => {
   const [showPan, setShowPan] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastValue, setToastValue] = useState("");
+  const [historyList, setHistoryList] = useState([]);
   const [lunar, setLunar] = useState("");
   const [solar, setSolar] = useState("");
+  const [name, setName] = useState("");
   const [currentBazi, setCurrentBazi] = useState("");
   const [currentYear, setCurrentYear] = useState("");
   const [startYunSolar, setStartYunSolar] = useState("");
@@ -36,14 +50,22 @@ const Index = () => {
 
   const dispatch = useDispatch();
 
-  const openFn = () => {
-    dispatch(open());
+  const openFn = (type) => {
+    if (type === "area") {
+      dispatch(openArea());
+    } else {
+      dispatch(open());
+    }
+  };
+
+  const getName = (e) => {
+    console.log("name", e.target.value);
+    setName(e.target.value);
   };
 
   const initBazi = () => {
     //阳历1，阴历0
     var year, month, day, hour;
-
     hour = Number(huangli.getBaziDate.split(" ")[1]);
 
     if (liValue === "1") {
@@ -58,6 +80,7 @@ const Index = () => {
       day = Number(huangli.getBaziDate.split("-")[2].split(" ")[0]);
     }
     const lunarObj = Lunar.fromYmdHms(year, month, day, hour, 30, sexValue);
+    addHistory({ name, year, month, day, hour, sexValue, liValue });
     const solarObj = lunarObj.getSolar();
     const currBaziObj = lunarObj.getEightChar();
     currBaziObj.setSect(2);
@@ -65,6 +88,69 @@ const Index = () => {
     setLunar(lunarObj); //1男，0女
     setSolar(solarObj);
     setCurrentBazi(currBaziObj);
+  };
+  const historyInit = (item) => {
+    //阳历1，阴历0
+    var year = Number(item.year),
+      month = Number(item.month),
+      day = Number(item.day),
+      hour = Number(item.hour);
+    setSexValue(item.sex);
+    // if (item.liValue === "1") {
+    //   const ymd = dayjs().format(`${year}-${month}-${day}`);
+    //   const so = Solar.fromDate(new Date(ymd));
+    //   year = Number(so.getLunar().getYear());
+    //   month = Number(so.getLunar().getMonth());
+    //   day = Number(so.getLunar().getDay());
+    // }
+    const lunarObj = Lunar.fromYmdHms(year, month, day, hour, 30, item.sex);
+    const solarObj = lunarObj.getSolar();
+    const currBaziObj = lunarObj.getEightChar();
+    currBaziObj.setSect(2);
+    computeEightChar(lunarObj);
+    setLunar(lunarObj); //1男，0女
+    setSolar(solarObj);
+    setCurrentBazi(currBaziObj);
+    setShowPan(true);
+  };
+  const randomPan = () => {
+    const year = Math.floor(Math.random() * (2009 - 1930 + 1) + 1930);
+    const month = Math.floor(Math.random() * (12 - 1 + 1) + 1);
+    const day = Math.floor(Math.random() * (31 - 1 + 1) + 1);
+    const hour = Math.floor(Math.random() * (24 - 0 + 0) + 0);
+    setSexValue(String(Math.round(Math.random())));
+
+    setTimeout(() => {
+      const lunarObj = Lunar.fromYmdHms(year, month, day, hour, 30, sexValue);
+      const solarObj = lunarObj.getSolar();
+      const currBaziObj = lunarObj.getEightChar();
+      currBaziObj.setSect(2);
+      computeEightChar(lunarObj);
+      setLunar(lunarObj); //1男，0女
+      setSolar(solarObj);
+      setCurrentBazi(currBaziObj);
+      setShowPan(true);
+    }, 500);
+  };
+  const addHistory = (time) => {
+    console.log("time", time);
+    const hisData = Taro.getStorageSync("history")
+      ? JSON.parse(Taro.getStorageSync("history"))
+      : [];
+    let timeArr = [].concat(hisData);
+    console.log(hisData, timeArr);
+    timeArr.unshift({
+      name: time.name ? time.name : "匿名",
+      liValue: time.liValue,
+      sex: time.sexValue,
+      year: time.year,
+      month: time.month,
+      day: time.day,
+      hour: time.hour,
+    });
+    timeArr = timeArr.length > 5 ? timeArr.pop() : timeArr;
+    const timeStr = JSON.stringify(timeArr);
+    Taro.setStorageSync("history", timeStr);
   };
 
   const {
@@ -89,21 +175,21 @@ const Index = () => {
     if (!sexValue) {
       setToastValue("您还没选择性别！");
       setToastOpen(true);
-    } else {
-      if (!liValue) {
-        setToastValue("您还没选择阴历还是阳历！");
-        setToastOpen(true);
-      }
+    } else if (!liValue) {
+      setToastValue("您还没选择阴历还是阳历！");
+      setToastOpen(true);
+    } else if (!huangli.getAreaData?.provice) {
+      setToastValue("您还没选择出生地点！");
+      setToastOpen(true);
     }
     var year =
       new Date().getFullYear() - Number(huangli.getBaziDate.split("-")[0]);
     if (year > 12) {
-      if (sexValue && liValue) {
+      if (sexValue && liValue && huangli.getAreaData?.provice) {
         setShowPan(true);
         initBazi();
       }
     } else {
-      setToastValue("不要给小朋友算命啦");
       setToastOpen(true);
     }
   };
@@ -420,9 +506,16 @@ const Index = () => {
       path: "/pages/bazi",
     };
   };
+  const getStoreHistry = () => {
+    const hisData = Taro.getStorageSync("history")
+      ? JSON.parse(Taro.getStorageSync("history"))
+      : [];
+    setHistoryList(hisData);
+  };
   useEffect(() => {
     onShareAppMessage();
     onShareTimeline();
+    getStoreHistry();
   }, []);
 
   return (
@@ -439,6 +532,14 @@ const Index = () => {
               请选择出生生辰{huangli.getBaziDate}时
               <ArrowDown />
             </View>
+          </View>
+          <View className="name-box">
+            <Text>请输入名字：</Text>
+            <Input
+              placeholder="请输入名字"
+              defaultValue={name}
+              onBlur={(e) => getName(e)}
+            />
           </View>
           <View className="sex-box">
             <Text>请选择性别：</Text>
@@ -474,6 +575,19 @@ const Index = () => {
               </Radio>
             </Radio.Group>
           </View>
+          <View
+            className="select-address"
+            onClick={() => {
+              openFn("area");
+            }}
+          >
+            选择出生地点
+            <ArrowDown />
+          </View>
+          {huangli.getAreaData?.provice && (
+            <View className="area-data">{`${huangli.getAreaData?.provice}-${huangli.getAreaData?.city}-${huangli.getAreaData?.county}`}</View>
+          )}
+
           <View className="btn-box">
             <Button
               variant="contained"
@@ -486,6 +600,37 @@ const Index = () => {
               确定
             </Button>
           </View>
+          <View className="btn-box">
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              shape="round"
+              className="btn"
+              onClick={randomPan}
+            >
+              随机一个
+            </Button>
+          </View>
+          {historyList.length > 0 && (
+            <View className="btn-box-history">
+              <View className="history-tit">历史记录</View>
+              {historyList.map((item, idx) => {
+                return (
+                  <View key={idx} onClick={() => historyInit(item)}>
+                    <Cell.Group>
+                      <Cell
+                        title={item.name}
+                        brief={`阴历:${item.year}年${item.month}月${item.day}日 ${item.hour}时`}
+                      >
+                        {item.sex === "1" ? "男" : "女"}
+                      </Cell>
+                    </Cell.Group>
+                  </View>
+                );
+              })}
+            </View>
+          )}
         </View>
       ) : (
         <>
@@ -1461,6 +1606,7 @@ const Index = () => {
       )}
       <View>
         <DatePick />
+        <AreaPick />
         <Toast open={toastOpen} onClose={setToastOpen}>
           {toastValue}
         </Toast>

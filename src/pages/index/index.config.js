@@ -4,5 +4,5 @@ export default definePageConfig({
   backgroundTextStyle: "light",
   navigationStyle: "custom",
   navigationBarTextStyle: "white",
-  navigationBarTitleText: "一起测测",
+  navigationBarTitleText: "智能排盘工具",
 });

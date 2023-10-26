@@ -13,6 +13,20 @@
     text-align: center;
     margin-top: 30rpx;
   }
+  .name-box {
+    text-align: center;
+    margin-top: 30rpx;
+    input {
+      width: 70%;
+      display: block;
+      height: 60px;
+      line-height: 60px;
+      border-radius: 8px;
+      margin: 30px auto;
+      border: 1px solid #57b6ee;
+      border-image: linear-gradient(#57b6ee, #57e2de) 10 10;
+    }
+  }
   .sex {
     width: 100%;
     height: 80rpx;
@@ -20,12 +34,37 @@
     display: flex;
     justify-content: center;
   }
+  .select-address {
+    text-align: center;
+    height: 80px;
+    line-height: 80px;
+    padding: 20px;
+  }
+  .area-data {
+    text-align: center;
+  }
+  .btn-box-history {
+    width: 90%;
+    margin: 20px auto;
+    .btn {
+      background: linear-gradient(180deg, #57b6ee, #57e2de);
+      border: none;
+      font-weight: bold;
+    }
+    .history-tit {
+      font-weight: bold;
+      font-size: 36px;
+      margin-bottom: 20px;
+      margin-top: 40px;
+    }
+  }
   .btn-box {
     width: 90%;
     margin: 30rpx auto;
     .btn {
-      background: #8a6e17;
+      background: linear-gradient(180deg, #57e2de, #57b6ee);
       border: none;
+      font-weight: bold;
     }
   }
   .date-pick-box {
@@ -483,11 +522,11 @@
   background: #8a6e17;
 }
 .taroify-radio__icon--checked .taroify-icon {
-  background: #8a6e17;
+  background: #57b6ee;
   border: none;
 }
 .taroify-picker__confirm {
-  color: #8a6e17;
+  color: #57b6ee;
 }
 
 .taroify-radio__icon .taroify-icon {

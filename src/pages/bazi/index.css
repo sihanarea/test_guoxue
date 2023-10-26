@@ -14,6 +14,20 @@
   text-align: center;
   margin-top: 30rpx;
 }
+.bazi .name-box {
+  text-align: center;
+  margin-top: 30rpx;
+}
+.bazi .name-box input {
+  width: 70%;
+  display: block;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 8px;
+  margin: 30px auto;
+  border: 1px solid #57b6ee;
+  border-image: linear-gradient(#57b6ee, #57e2de) 10 10;
+}
 .bazi .sex {
   width: 100%;
   height: 80rpx;
@@ -21,13 +35,38 @@
   display: flex;
   justify-content: center;
 }
+.bazi .select-address {
+  text-align: center;
+  height: 80px;
+  line-height: 80px;
+  padding: 20px;
+}
+.bazi .area-data {
+  text-align: center;
+}
+.bazi .btn-box-history {
+  width: 90%;
+  margin: 20px auto;
+}
+.bazi .btn-box-history .btn {
+  background: linear-gradient(180deg, #57b6ee, #57e2de);
+  border: none;
+  font-weight: bold;
+}
+.bazi .btn-box-history .history-tit {
+  font-weight: bold;
+  font-size: 36px;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
 .bazi .btn-box {
   width: 90%;
   margin: 30rpx auto;
 }
 .bazi .btn-box .btn {
-  background: #8a6e17;
+  background: linear-gradient(180deg, #57e2de, #57b6ee);
   border: none;
+  font-weight: bold;
 }
 .bazi .birthday {
   background: linear-gradient(-90deg, #8a6e17, #b69626);
@@ -472,11 +511,11 @@
   background: #8a6e17;
 }
 .taroify-radio__icon--checked .taroify-icon {
-  background: #8a6e17;
+  background: #57b6ee;
   border: none;
 }
 .taroify-picker__confirm {
-  color: #8a6e17;
+  color: #57b6ee;
 }
 .taroify-radio__icon .taroify-icon {
   border: 2rpx solid var(--radio-border-color, var(--gray-5, #c8c9cc));

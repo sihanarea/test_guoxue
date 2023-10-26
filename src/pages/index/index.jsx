@@ -3,7 +3,7 @@ import Taro from "@tarojs/taro";
 import { connect } from "react-redux";
 import { View } from "@tarojs/components";
 import { add, minus, asyncAdd } from "../../actions/counter";
-import GridList from "./components/GridList";
+// import GridList from "./components/GridList";
 import RowList from "./components/RowList";
 import "./index.less";
 import CalendarBanner from "./components/CalendarBanner";
@@ -66,13 +66,13 @@ class Index extends Component {
   onShareAppMessage(){
      return {
       title: "老黄历",
-      path: "/pages/index",
+      path: "/pages/index/index",
     }
   }
   onShareTimeline(){
     return {
       title: "老黄历",
-      path: "/pages/index",
+      path: "/pages/index/index",
     }
   }
   render() {
@@ -82,7 +82,7 @@ class Index extends Component {
         <View className="header">
          <View className="header-title">智能排盘工具</View>
           <CalendarBanner />
-          <RowList asdfasdf={this.state.asdfasdf} />
+          <RowList />
         </View>
         {/* <View>{this.props.counter.num}</View>
          <View onCLick={this.props.add}>增加</View> */}

@@ -1,10 +1,13 @@
 import {
   OPEN,
   CLOSE,
+  OPENAREA,
+  CLOSEAREA,
   GETHUANGLIDATE,
   OPENHUANGLI,
   CLOSEHUANGLI,
-  GETBAZIDATE,
+  GETBAZIDATA,
+  GETAREADATA,
 } from "../constants/counter";
 
 export const open = () => {
@@ -15,6 +18,16 @@ export const open = () => {
 export const close = () => {
   return {
     type: CLOSE,
+  };
+};
+export const openArea = () => {
+  return {
+    type: OPENAREA,
+  };
+};
+export const closeArea = () => {
+  return {
+    type: CLOSEAREA,
   };
 };
 
@@ -29,16 +42,23 @@ export const closeHunagLi = () => {
   };
 };
 
-export const getHuangLiDate = (date) => {
+export const getHuangLiDate = (data) => {
   return {
     type: GETHUANGLIDATE,
-    data: date,
+    data: data,
   };
 };
 
-export const getBaziDate = (date) => {
+export const getBaziDate = (data) => {
   return {
-    type: GETBAZIDATE,
-    data: date,
+    type: GETBAZIDATA,
+    data: data,
+  };
+};
+
+export const getAreaData = (data) => {
+  return {
+    type: GETAREADATA,
+    data: data,
   };
 };

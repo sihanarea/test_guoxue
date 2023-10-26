@@ -3,17 +3,22 @@ import dayjs from "dayjs";
 import {
   OPEN,
   CLOSE,
+  OPENAREA,
+  CLOSEAREA,
   GETHUANGLIDATE,
   OPENHUANGLI,
   CLOSEHUANGLI,
-  GETBAZIDATE,
+  GETBAZIDATA,
+  GETAREADATA,
 } from "../constants/counter";
 
 const INITIAL_STATE = {
   isOpen: false,
   isOpenHuangLi: false,
+  isOpenArea: false,
   getHuangLiDate: dayjs().format("YYYY-MM-DD"),
-  getBaziDate: dayjs().format("YYYY-MM-DD HH"),
+  getBaziDate: dayjs().format("2009-01-01 00"),
+  getAreaData: { provice: "", city: "", county: "" },
 };
 
 export default function huangli(state = INITIAL_STATE, action) {
@@ -27,6 +32,16 @@ export default function huangli(state = INITIAL_STATE, action) {
       return {
         ...state,
         isOpen: false,
+      };
+    case OPENAREA:
+      return {
+        ...state,
+        isOpenArea: true,
+      };
+    case CLOSEAREA:
+      return {
+        ...state,
+        isOpenArea: false,
       };
     case OPENHUANGLI:
       return {
@@ -43,10 +58,15 @@ export default function huangli(state = INITIAL_STATE, action) {
         ...state,
         getHuangLiDate: action.data,
       };
-    case GETBAZIDATE:
+    case GETBAZIDATA:
       return {
         ...state,
         getBaziDate: action.data,
+      };
+    case GETAREADATA:
+      return {
+        ...state,
+        getAreaData: action.data,
       };
     default:
       return state;
